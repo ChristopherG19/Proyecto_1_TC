@@ -7,9 +7,9 @@
 class AFD():
     def __init__(self, In, Fn=None):
         self.initState = In
-        self.acceptStates = Fn
+        self.acceptStates = [] or Fn
         self.states = []
         self.dictionary = []
         self.transitions = []
     
-        
+    
