@@ -10,20 +10,12 @@
 from stack import *
 
 class Conversion(object):
-    def __init__(self, expression):
-        self.symbols = []
+    def __init__(self, expression, symbols):
+        self.symbols = symbols
         self.infix = expression
-        self.precedencia = {'(': 0, '+': 1, '?': 1, '*': 1, '|': 2, '.': 3}
+        self.precedencia = {'(': 0, '|': 1, '.': 2, '+': 3, '?': 3, '*': 3}
         self.operators = ['+', '*', '?', '|']
         
-        # Se obtienen los símbolos del alfabeto
-        # $ representa epsilon
-        for i in expression:
-            if(i not in '().*+|$' and i not in self.symbols):
-                self.symbols.append(i)  
-        
-        self.symbols = sorted(self.symbols)
-
     def __getSymbols__(self):
         return self.symbols
     
@@ -52,7 +44,6 @@ class Conversion(object):
                     postfixElements += '.'
                 
         postfixElements += self.infix[CantElements-1]
-        print(postfixElements)
         
         stack = Stack()
         
@@ -81,10 +72,4 @@ class Conversion(object):
         while (not stack.isEmpty()):
             postfixExp += stack.pop()
             
-
-        print(postfixExp)
-        
-r = "(b|b)abb(a|b)"
-r2 = "000(0|1)"
-a = Conversion(r2)
-a.infixToPostfix()
+        return postfixExp
