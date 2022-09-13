@@ -13,11 +13,9 @@ class AFN():
         self.expression = expression
         self.states = set()
         self.symbols = []
-        self.acceptState = set()
-        self.transitions = {}
+        self.transitions = []
         self.elementsPF = []
         self.countStates = 1
-        self.initialState = set()
         self.stack = []
         self.stackAFN = Stack()
         
@@ -41,8 +39,22 @@ class AFN():
         
     def Thompson_Construction(self): 
         
-        self.getStates()
+        self.prueba()
+        self.initialState, self.acceptState = list(self.transitions)[0][0], list(self.transitions)[-1][-1]
         self.PrintResults()
+        
+        
+    def prueba(self):
+        exp = self.postfixExp
+        
+        for a in range(len(exp)):
+            if (exp[a] in self.symbols or exp[a] == '$'):
+                self.symbol(exp[a])
+            elif (exp[a] == '.'):
+                ElA = exp[a-1]
+                ElB = exp[a-2]
+                self.concatExp(ElB, ElA)
+        
         
     def getStates(self):
         if (len(self.stack) != 0):
@@ -52,7 +64,7 @@ class AFN():
             elif (start == '.'):
                 ElA = self.getStates()
                 ElB = self.getStates()
-                return self.concatExp(ElA, ElB)
+                self.concatExp(ElB, ElA)
              
     def symbol(self, symbolN):
         Estado_A = self.countStates
@@ -61,45 +73,41 @@ class AFN():
         self.states.add(Estado_A)
         self.states.add(Estado_B)
         
-        t = (Estado_B, symbolN)
-        self.transitions[Estado_A] = [t]
-        self.transitions[Estado_B] = []
+        temp = [Estado_A, symbolN, Estado_B]
+        trans = [str(x) for x in temp]
+        self.transitions.append(trans)
         
         self.stackAFN.push((Estado_A, Estado_B))
+        
+    def concatExp(self, ElA, ElB):
+        Estado_A = ElA
+        Estado_B = ElB
         return (Estado_A, Estado_B)
         
     def unionExp(self):
         0
-    
-    def concatExp(self, ElA, ElB):
-        Estado_A = ElA[0]
-        Estado_B = ElB[1]
-
-        transition = (ElB[0], '$')
-        
-        self.transitions[ElA[1]].append(transition)
-        
-        return (Estado_A, Estado_B)
         
     def closureExp(self):
         0
         
     def PrintResults(self):
-        #self.stackAFN.print()
-        # print(self.postfixExp)
-        # print(self.states)
-        # print(self.symbols)
-        # print(self.initialState)
-        # print(self.acceptState)
+        print("\nInfix Expression:", self.expression)
+        print("PostFix Expression:", self.postfixExp)
+        print("Estados: ", self.states)
+        print("Simbolos: ", self.symbols)
+        print("Inicio: ", self.initialState)
+        print("Aceptacion: ", self.acceptState)
         self.printT()
            
     def printT(self):
-        print(self.transitions)
+        x = ""
+        Transitions = []
         for k in self.transitions:
-            for a in self.transitions[k]:
-                b = str(k) + ' - (' + str(a[1]) + ') -> '+str(a[0])
-                print(b)
+            x = '(' + k[0] + ', ' + k[1] + ', ' + k[2] + ')'
+            Transitions.append(x)
+            
+        print("Transiciones: "+ " - ".join(Transitions))
+        print()
         
-       
-r = "01" #00.0.01|*.
+r = "000111" #00.0.01|*.
 N = AFN(r)
