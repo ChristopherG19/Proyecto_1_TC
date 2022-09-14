@@ -1,0 +1,153 @@
+class Construction():
+    def __init__(self, expression):
+        self.expression = expression
+        self.states = set()
+        self.symbols = []
+        self.transitions = []
+        self.elementsPF = []
+        self.countStates = 1
+        self.stack = []
+        self.stackAFN = Stack()
+        self.stackAFN2 = []
+        
+        # Se obtienen los símbolos del alfabeto
+        # $ representa epsilon
+        for i in expression:
+            if(i not in '().*+|$' and i not in self.symbols):
+                self.symbols.append(i)  
+        self.symbols = sorted(self.symbols)
+        
+        self.Obj = Conversion(expression)
+        self.postfixExp = self.Obj.infixToPostfix()
+        
+        for a in (self.postfixExp):
+            self.stack.append(a)
+
+        #print(self.postfixExp)
+        #print(self.stack)
+
+        self.Thompson_Construction()
+        
+    def Thompson_Construction(self): 
+        #self.PrintResults()
+        
+        self.prueba()
+        self.initialState, self.acceptState = list(self.transitions)[0][0], list(self.transitions)[-1][-1]
+        for a in self.stackAFN2:
+            a.Print()
+        self.PrintResults()
+        
+    def prueba(self):
+        exp = self.postfixExp
+        for a in range(len(exp)):
+            if (exp[a] in self.symbols or exp[a] == '$'):
+                self.symbol(exp[a])
+            elif (exp[a] == '.'):
+                ElA = self.stackAFN2.pop()
+                ElB = self.stackAFN2.pop()
+                self.concatExp(ElB, ElA)
+            elif (exp[a] == '|'):
+                ElA = self.stackAFN.pop()
+                ElB = self.stackAFN.pop()
+                print(ElB, ElA)
+                self.unionExp(ElB, ElA)
+                
+    def prueba2(self):
+        if (len(self.stack) != 0):
+            start = self.stack.pop()
+            if (start in self.symbols or start == '$'):
+                return self.symbol(start)
+            elif (start == '.'):
+                ElA = self.prueba2()
+                ElB = self.prueba2()
+                return self.concatExp(ElA, ElB)
+            elif (start == '|'):
+                return self.unionExp()
+            else:
+                return self.closureExp()
+                   
+    def symbol(self, symbol):
+        print(symbol)
+        Estado_A = self.countStates
+        self.countStates += 1
+        Estado_B = self.countStates
+        self.states.add(Estado_A)
+        self.states.add(Estado_B)
+        
+        NewAFN = AFN(Estado_A, symbol, Estado_B)
+        self.stackAFN2.append(NewAFN)
+        
+        temp = [Estado_A, symbol, Estado_B]
+        trans = [str(x) for x in temp]
+        if (trans not in self.transitions):
+            self.transitions.append(trans)
+                    
+        #return ((Estado_A, Estado_B))
+        
+    def concatExp(self, ElA, ElB):
+        
+        Estado_A = ElA.NodoA
+        Estado_B = ElB.NodoB
+        
+        temp = [ElA.NodoB, '$', ElB.NodoA]
+        
+        NewAFN = AFN(Estado_A, symbol, Estado_B)
+        
+        trans = [str(x) for x in temp]
+        if (trans not in self.transitions):
+            self.transitions.append(trans)
+            
+        #return ((Estado_A, Estado_B))
+        
+    def unionExp(self, ElA, ElB):
+        #anvorguesa
+        Start = ElA[0]
+        self.countStates -= 1
+        ElA[0] = self.countStates
+        self.countStates += 1
+        ElA[1] = self.countStates
+        
+        End = 6
+        
+        
+        temp = [Start, '$', ElA[0]+1]
+        temp2 = [ElB[0], s2, ElB[1]]
+                    
+        
+        self.concatExp((Estado_A, Estado_B), ElA, '$')
+        self.concatExp((Estado_A, Estado_B), ElB, '$')
+        self.concatExp(ElA, ElB)
+        
+       
+    def closureExp(self, closureS):
+        if (closureS == '*'):
+            0
+        elif (closureS == '+'):
+            0
+        else:
+            #()?
+            0
+        
+    def PrintResults(self):
+        print("\nInfix Expression:", self.expression)
+        print("PostFix Expression:", self.postfixExp)
+        print("Estados: ", self.states)
+        print("Simbolos: ", self.symbols)
+        print("Inicio: ", self.initialState)
+        print("Aceptacion: ", self.acceptState)
+        self.printT()
+           
+    def printT(self):
+        x = ""
+        Transitions = []
+        
+
+        for k in self.transitions:
+            x = '(' + k[0] + ', ' + k[1] + ', ' + k[2] + ')'
+            Transitions.append(x)
+            
+        print("Transiciones: "+ " - ".join(Transitions))
+        print()
+        
+r = "01" #00.0.01|*.
+N = Construction(r)

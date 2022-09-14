@@ -10,21 +10,17 @@
 from stack import *
 
 class Conversion(object):
-    def __init__(self, expression, symbols):
-        self.symbols = symbols
+    def __init__(self, expression):
         self.infix = expression
-        self.precedencia = {'(': 0, '|': 1, '.': 2, '+': 3, '?': 3, '*': 3}
+        self.precedencia = {'*': 5, '?': 5, '+': 5, '.': 4, '|': 3, '(':0}
         self.operators = ['+', '*', '?', '|']
         
-    def __getSymbols__(self):
-        return self.symbols
-    
     def __getExpression__(self):
         return self.infix
     
     def __getPrecedence__(self, element):
         if (self.precedencia.get(element) == None):
-            return 4
+            return 5
         else:
             return self.precedencia.get(element)
         
@@ -35,12 +31,11 @@ class Conversion(object):
         
         for element in range(CantElements):
             el1 = self.infix[element]
-            
             if ((element + 1) < len(self.infix)):
                 el2 = self.infix[element + 1]
                 postfixElements += el1
-                
-                if ((el1 != '(') and (el2 != ')') and (el1 not in self.operators) and (el2 not in self.operators)):
+
+                if ((el1 != '(') and (el2 != ')') and (el1 != '|') and (el2 not in self.operators)):
                     postfixElements += '.'
                 
         postfixElements += self.infix[CantElements-1]
@@ -54,14 +49,18 @@ class Conversion(object):
             elif (i == ')'):
                 while (not stack.isEmpty() and stack.peek() != '('):
                     postfixExp += stack.pop()
-                stack.pop()
+                
+                if (not stack.isEmpty() and stack.peek() != '('):
+                    return -1
+                else:
+                    stack.pop()
                 
             else:
                 while (not stack.isEmpty()):
                     element = stack.peek()
                     precedenceElement = self.__getPrecedence__(element)
                     precedenceActualEl = self.__getPrecedence__(i)
-                    
+
                     if (precedenceElement >= precedenceActualEl):
                         postfixExp += stack.pop()
                     else:

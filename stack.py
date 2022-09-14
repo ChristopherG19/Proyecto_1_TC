@@ -18,10 +18,10 @@ class Stack():
         return True if (self.size() == 0) else False
     
     def peek(self):
-        return self.stack[-1] if (not self.isEmpty()) else "No hay elementos" 
+        return self.stack[-1] if (not self.isEmpty()) else "No Elements" 
     
     def pop(self):
-        return self.stack.pop() if (not self.isEmpty()) else "No hay elementos" 
+        return self.stack.pop() if (not self.isEmpty()) else "No Elements" 
     
     def push(self, element):
         self.stack.append(element)
@@ -29,5 +29,9 @@ class Stack():
     def clear(self):
         self.stack = []
         
-    def print(self):
-        return print(self.stack)
+    def getElement(self, i):
+        return self.stack[i]
+        
+    def __str__(self):
+        for i in self.stack:
+            print(i)
