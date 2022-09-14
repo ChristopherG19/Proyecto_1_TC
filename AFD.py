@@ -176,6 +176,9 @@ class SyntaxTree():
     def get_lastpos(self):
         """"""
 
+    def get_firstpos(self):
+        """"""
+
 r = '(a|b)*a#'
 afd = SyntaxTree(r)
     
