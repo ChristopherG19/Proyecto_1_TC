@@ -22,9 +22,12 @@ class Tree():
 
         self.generateFirstLastPos()
 
+        self.followpos()
+
         # print nodes
         for a in self.Arbol:
-            print(a)
+            if (a.isLeaf()):
+                print(a)
 
 
     def check_leaves(self):
@@ -154,7 +157,45 @@ class Tree():
                     else:
                         for fp in n.getRight().firstpos:
                             n.addLastPos(fp)
+
+    def followpos(self):
+        
+        for n in self.Arbol:
+            if (n.getSymbol() == '.'):
+                for pos in n.getLeft().lastpos:
+                    
+                    # Encontrar a qué nodo pertenece la posición
+                    n_temp = 0
+                    for i in range(len(self.Arbol)):
+                        if (self.Arbol[i].getPos() == pos):
+                            n_temp = i
+                            break
+
+                    # Añadir el firstpos del lado derecho
+                    for i in n.getRight().firstpos:
+                        self.Arbol[n_temp].addFollowPos(i)
+
+            if (n.getSymbol() in '*+'):
+                for pos in n.lastpos:
+                    # Encontrar a qué nodo pertenece la posición
+                    n_temp = 0
+                    for i in range(len(self.Arbol)):
+                        if (self.Arbol[i].getPos() == pos):
+                            n_temp = i
+                            break
+
+                    # Añadir el firstpos del lado derecho
+                    for i in n.firstpos:
+                        self.Arbol[n_temp].addFollowPos(i)
+
+                        
+
+                        
+
+
+
 # pruebas
-r = '(a|b)*(a|b)*#'
+r = '(a|b)*(a|b)*a?#'
+#r = '(aa|bb)*#'
 arbol = Tree(r)
 

@@ -49,7 +49,8 @@ class Node():
         self.lastpos.append(n)
 
     def addFollowPos(self, n):
-        self.followpos.append(n)
+        if (n not in self.followpos):
+            self.followpos.append(n)
 
     def isLeaf(self):
         return self.leaf
