@@ -10,7 +10,7 @@ class AFD():
     def __init__(self, arbol):
         """"""
 
-class Node():
+class Node_1():
     def __init__(self, symbol, no, pos = None):
         self.symbol = symbol
         self.no = no
@@ -103,11 +103,11 @@ class SyntaxTree():
         for x in (self.stack):
             temp = 0
             if (x not in '().*+|$'):
-                temp = Node(x, n, p)
+                temp = Node_1(x, n, p)
                 n += 1
                 p += 1
             else:
-                temp = Node(x, n)
+                temp = Node_1(x, n)
                 n += 1
             self.nodes.append(temp)
 
