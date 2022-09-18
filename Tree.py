@@ -20,9 +20,9 @@ class Node():
 
         retString = ""
         if (type(self.left) == Node and type(self.right) == Node):
-            retString = str(self.symbol) + ',\t' + str(self.pos) + ',\t' + str(self.firstpos) + ',\t' + str(self.lastpos) + ',\t' + str(self.followpos) + ',\t' + self.left.getSymbol() + ',\t' + self.right.getSymbol()
+            retString = str(self.symbol) + ',\t' + str(self.pos) + ',\t' + str(self.nullable) + ',\t' + str(self.firstpos) + ',\t' + str(self.lastpos) + ',\t' + str(self.followpos) + ',\t' + self.left.getSymbol() + ',\t' + self.right.getSymbol()
         else:
-            retString = str(self.symbol) + ',\t' + str(self.pos) + ',\t' + str(self.firstpos) + ',\t' + str(self.lastpos) + ',\t' + str(self.followpos) 
+            retString = str(self.symbol) + ',\t' + str(self.pos) + ',\t' + str(self.nullable) + ',\t' + str(self.firstpos) + ',\t' + str(self.lastpos) + ',\t' + str(self.followpos) 
         return retString
 
     def setAsLeaf(self):
@@ -64,6 +64,21 @@ class Node():
     def getSymbol(self):
         return self.symbol
 
+    def getPos(self):
+        return self.pos
+
+    def getLeft(self):
+        return self.left
+
+    def getLeftPos(self):
+        return self.left.getPos()
+
+    def getRight(self):
+        return self.right
+
+    def getRightPos(self):
+        return self.right.getPos()
+
 class Tree():
     def __init__(self, regex):
         self.regex = regex
@@ -80,12 +95,15 @@ class Tree():
 
         self.look_for_children()
 
+        self.generateFirstLastPos()
+
         # print nodes
         for a in self.Arbol:
             print(a)
 
-    
+
     def check_leaves(self):
+        
         pos = 0
         i = 0
         for e in self.stack:
@@ -152,9 +170,58 @@ class Tree():
                         buscar = False
                     # Si ya está asingado, regresar una posición
                     i2 += 1
-                
 
+    def generateFirstLastPos(self):
+        
+        for n in self.Arbol:
+            if (not n.isLeaf()):
+                if (n.getSymbol() == '|'):
+
+                    # firstpos = {iz} U {der}
+                    for fp in n.getLeft().firstpos:
+                        n.addFirstPos(fp)
+                    for fp in n.getRight().firstpos:
+                        n.addFirstPos(fp)
+
+                    # lastpos = {iz} U {der}
+                    for fp in n.getLeft().lastpos:
+                        n.addLastPos(fp)
+                    for fp in n.getRight().lastpos:
+                        n.addLastPos(fp)
+
+                if (n.getSymbol() in '*?+'):
+
+                    # fistpos 
+                    for fp in n.getLeft().firstpos:
+                        n.addFirstPos(fp)
+
+                    # lastpos
+                    for fp in n.getRight().lastpos:
+                        n.addLastPos(fp)
+
+                if (n.getSymbol() == '.'):
+                    # fistpos 
+                    if n.getLeft().isNullable():
+                        for fp in n.getLeft().firstpos:
+                            n.addFirstPos(fp)
+                        for fp in n.getRight().firstpos:
+                            n.addFirstPos(fp)
+
+                    else:
+                        for fp in n.getLeft().firstpos:
+                            n.addFirstPos(fp)
+
+                    # lastpos 
+                    if n.getRight().isNullable():
+                        for fp in n.getLeft().firstpos:
+                            n.addLastPos(fp)
+                        for fp in n.getRight().firstpos:
+                            n.addLastPos(fp)
+
+                    else:
+                        for fp in n.getRight().firstpos:
+                            n.addLastPos(fp)
 # pruebas
-r = '(a|b)*a#'
+r = 'a(a|b)*#'
 arbol = Tree(r)
 
