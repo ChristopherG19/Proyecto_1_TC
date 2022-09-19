@@ -4,181 +4,97 @@
 # CC2019 Teoría de la computación
 # Grupo#9 
 
-from conversions import *
+from Tree import *
 
 class AFD():
-    def __init__(self, arbol):
+    def __init__(self):
+        self.afd = []
+        self.Dstates = []
+
+    def directConstruction(self, arbol):
+
+        # Alfabeto de la expresión regex
+        Symbols = self.detSymbols(arbol)
+
+        # Firstpos de la raíz
+        cant_n = len(arbol.Arbol)
+        Dstates = []
+        Dstates.append(arbol.Arbol[cant_n - 1].firstpos)
+
+        Dstates_marked = []
+
+        # Si no todos los estados de Dstates están marcados (en Dstates_marked) se continúa
+        while (not all(t in Dstates_marked for t in Dstates)):
+            for t in Dstates:
+                # Se marca el estado actual
+                Dstates_marked.append(t)
+
+                for a in Symbols:
+                    U = []
+                    if (a != '#'):
+                        # Ignoramos el último #
+
+                        # Buscamos en todo el árbol por las posiciones que tengan el símbolo
+                        for x in t:
+                            if arbol.States[x].getSymbol() == a:
+                                # Si no está en el estado, se añade
+                                for e in arbol.States[x].followpos:
+                                    if (e not in U):
+                                        U.append(e)
+                        
+                        if (len(U) > 0):
+                            if (U not in Dstates):
+                                Dstates.append(U)
+
+                            self.afd.append([t, a, U])
+
+        print('afd: ', self.afd)
+
+        # Renombramos los estados 
+        newStates = ["q%s"%x for x in range(len(Dstates))]
+        
+        for x in range(len(Dstates)):
+            print(Dstates[x],'\t', newStates[x])
+
+        temp_afd = []
+        for trans in self.afd:
+            t = []
+            for element in trans:
+                if (element in Dstates):
+                    t.append(newStates[Dstates.index(element)])
+                else:
+                    t.append(element)
+            temp_afd.append(t)
+
+        self.afd = temp_afd
+        print('afd: ', self.afd)
+
+
+    def simulation(self):
         """"""
 
-class Node_1():
-    def __init__(self, symbol, no, pos = None):
-        self.symbol = symbol
-        self.no = no
-        self.pos = pos
-        self.nullable = False
-        self.firstpos = []
-        self.lastpos = []
-        self.nextpos = []
-        self.leftpos = 0
-        self.rightpos = 0
-
-        if pos:
-            self.firstpos.append(pos)
-            self.lastpos.append(pos)
-
-        if (self.symbol == '*' or self.symbol == '?' or self.symbol == '$'):
-            self.nullable = True
-        
-    def __repr__(self):
-        return (self.symbol + ', ' + str(self.no) + ', ' + str(self.firstpos) + ', ' + str(self.lastpos) + ', ' + str(self.nullable))
-
-    def set_firstpos(self, fp):
-        self.firstpos = fp
-
-    def set_lastpos(self, lp):
-        self.lastpos = lp
-
-    def set_nextpos(self, np):
-        self.nextpos = np
-
-    def set_left(self, left):
-        self.leftpos = left
-
-    def set_right(self, right):
-        self.rightpos = right
-
-    def get_symbol(self):
-        return self.symbol
-
-    def get_no(self):
-        return self.no
-
-    def get_pos(self):
-        return self.pos
-
-    def get_firstpos(self):
-        return self.firstpos
-
-    def get_lastpos(self):
-        return self.lastpos
-
-    def get_nextpos(self):
-        return self.nextpos
-
-    def left(self):
-        return self.leftpos
-    
-    def right(self):
-        return self.rightpos
-
-
-class SyntaxTree():
-    def __init__(self, expresion):
-        self.regex = expresion
-        self.elements = []
-        self.stack = []
-        self.dictionary = []
-        self.tree = []
-
-        # Conversión a posfix
-        self.Obj = Conversion(self.regex)
-        self.postfixExp = self.Obj.infixToPostfix()
-        for a in (self.postfixExp):
-            self.stack.append(a)
-
-        # Obtención del diccionario
-        for x in self.postfixExp:
-            if (x not in '().*+|$'):
-                self.elements.append(x)
-                if (x not in self.dictionary):
-                    self.dictionary.append(x)
-
-
-        print("stack: ", self.stack)
-
-        # creación de nodos
-        self.nodes = []
-        n = 0
-        p = 1
-        for x in (self.stack):
-            temp = 0
-            if (x not in '().*+|$'):
-                temp = Node_1(x, n, p)
-                n += 1
-                p += 1
-            else:
-                temp = Node_1(x, n)
-                n += 1
-            self.nodes.append(temp)
-
-        # Se le sa vuelta a los nodos
-        self.nodes = list(reversed(self.nodes))
-
-        for n in (self.nodes):
-            print(n)
-            """"""
-        
-        print()
-
-        # Obtener el lado derecho e izquierdo de cada lado
-        self.getLeftRight()
-
-
-    def getLeftRight(self):
-        
-        # copia de nodes para saber cuáles ya se han asignado
-        nodos_used = []
-
-        for x in range(len(self.nodes)):
-            no_nodo = self.nodes[x].get_no() #número del nodo 
-            print()
-            print(self.nodes[x])
-            if (self.nodes[x].get_symbol() in '|?*+.'):
-                
-                # asignar lado derecho
-                for n in self.nodes:
-                    if (n.get_no() == no_nodo-1):
-                        self.nodes[x].set_right(n)
-                        # si es unario se agrega también como su lado izquierdo
-                        if (self.nodes[x].get_symbol() in '?*+'):
-                            self.nodes[x].set_left(n)
-                        # se agrega a los nodos usados (para determinar la izquierda)
-                        nodos_used.append(n)
-
-                # asignar lado izquierdo
-                check = True
-                i = 1 # Se salta el primero porque es la raiz
-                while (check):
-                    # si ya fue usado antes (en la derecha), saltar
-                    if (self.nodes[i] in nodos_used):
-                        if (i < len(self.nodes)):
-                            i += 1
-                        # Si se pasa de la lista, salir del while
-                        else:
-                            check = False
-                    
-                    # si no ha sido utilizado
-                    else:
-                        # verificar que no sea unario y que no se le haya establecido un lado iquierdo antes
-                        if (self.nodes[x].left() == 0):
-                            """
-                            Es necesario reforzar más esta parte para que no tome lados izquierdos de las
-                            ramas de su lado derecho!!!
-                            
-                            """
-                            self.nodes[x].set_left(self.nodes[i])
-                            nodos_used.append(self.nodes[i])
-                        check = False
-
-                print("derecha: ", self.nodes[x].right())
-                print("iz: ", self.nodes[x].left())
-
-    def get_lastpos(self):
+    def minimization(self):
         """"""
 
-    def get_firstpos(self):
-        """"""
 
-r = '(a|b)*a#'
-afd = SyntaxTree(r)
-    
+    def detSymbols(self, arbol):
+        Symbols = []
+        for n in arbol.States:
+            if (n.getSymbol() not in Symbols):
+                Symbols.append(n.getSymbol())
+        
+        return Symbols
+
+
+
+# pruebas
+#r = 'ab*ab*#'
+#r = '(a|b)*(a|b)*a?#'
+r = '(aa|bb)*#'
+#r = 'a(a|b)*#'
+#r = '(a|b)|(abab)'
+arbol = Tree(r)
+print()
+print(arbol)
+dfa = AFD()
+dfa.directConstruction(arbol)

@@ -7,6 +7,7 @@ class Tree():
         self.regex = regex
         self.stack = []
         self.Arbol = []
+        self.States = []
 
         # conversión de regex de infix a posfix
         self.Obj = Conversion(self.regex)
@@ -24,11 +25,13 @@ class Tree():
 
         self.followpos()
 
-        # print nodes
-        for a in self.Arbol:
-            if (a.isLeaf()):
-                print(a)
+        self.generateStates()
 
+    def __repr__(self):
+        retString = ""
+        for n in self.Arbol:
+            retString += str(n) + '\n'
+        return retString
 
     def check_leaves(self):
 
@@ -188,14 +191,8 @@ class Tree():
                     for i in n.firstpos:
                         self.Arbol[n_temp].addFollowPos(i)
 
-                        
-
-                        
-
-
-
-# pruebas
-r = '(a|b)*(a|b)*a?#'
-#r = '(aa|bb)*#'
-arbol = Tree(r)
+    def generateStates(self):
+        for n in self.Arbol:
+            if (n.isLeaf()):
+                self.States.append(n)
 
