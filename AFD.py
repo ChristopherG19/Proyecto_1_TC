@@ -71,8 +71,44 @@ class AFD():
         # Remplazamos
         self.afd = temp_afd
 
-    def simulation(self):
-        """"""
+        # Guardamos todos los estados
+        for x in self.afd:
+            if(x[0] not in self.Dstates):
+                self.Dstates.append(x[0])
+
+        for x in self.afd:
+            if(x[2] not in self.Dstates):
+                self.Dstates.append(x[2])
+            
+
+    def simulation(self, w):
+
+        if (type(w) != list):
+            w = list(w)
+
+        s = self.afd[0][0]
+        i = 0
+        c = w[i]
+
+        while (i < len(w) and s):
+            s = self.move(s, c)
+            i += 1
+
+        if (s == NULL or not self.EA[self.Dstates.index(s)]):
+            print("no")
+
+        else:
+            print("sí")
+
+    def move(self, state, char):
+        newState = NULL
+        for q in self.afd:
+            #por cada estado en el AFD, buscar si alguno tiene transición con la letra
+            if (q[0] == state):
+                if (q[1] == char):
+                    newState = q[2]
+        return newState
+
 
     def minimization(self):
         """"""
@@ -90,12 +126,16 @@ class AFD():
 
 # pruebas
 #r = 'ab*ab*#'
+#r = '(aa*)|(bb*)#'
 #r = '(a|b)*(a|b)*a?#'
-#r = '(aa|bb)*#'
+
+r = '(aa|bb)*#'
+w = 'aabba'
+
 #r = 'a(a|b)*#'
 #r = '(a|b)|(abab)'
 #r = '0(0|1)0#'
-r = '0*(0*|1)1#'
+#r = '0*(0*|1)1#'
 arbol = Tree(r)
 #print()
 #print(arbol)
@@ -103,3 +143,4 @@ dfa = AFD()
 dfa.directConstruction(arbol)
 for x in dfa.afd:
     print(x)
+dfa.simulation(w)
