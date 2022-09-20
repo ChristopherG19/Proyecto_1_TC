@@ -35,3 +35,4 @@ class Stack():
     def __str__(self):
         for i in self.stack:
             print(i)
+            

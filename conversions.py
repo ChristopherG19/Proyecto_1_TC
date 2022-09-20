@@ -12,7 +12,7 @@ from stack import *
 class Conversion(object):
     def __init__(self, expression):
         self.infix = expression
-        self.precedencia = {'*': 5, '?': 5, '+': 5, '.': 4, '|': 3, '(':0}
+        self.precedencia = {'*': 5, '?': 5, '+': 5, '.': 4, '|': 3, '(': 0}
         self.operators = ['+', '*', '?', '|']
         
     def __getExpression__(self):

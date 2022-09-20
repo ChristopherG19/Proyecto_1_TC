@@ -5,6 +5,13 @@
 # Grupo#9 
 
 # Main 
+from SimulacionAFN import *
 
 r = "(b|b)*abb(a|b)*"
-w = "babbaaaa"
+w = "a"
+
+Resultado = Simulation(r, w)
+
+print("\nExpresion regular:", r)
+print("Cadena a evaluar:", w)
+print("Resultado:", Resultado, "es aceptada\n")
