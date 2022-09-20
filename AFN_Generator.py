@@ -28,7 +28,7 @@ class Construction:
         # Se obtienen los símbolos del alfabeto y se ordenan
         # $ representa epsilon
         for i in self.expression:
-            if(i not in '().*+|$' and i not in self.symbols):
+            if(i not in '().*+|$?' and i not in self.symbols):
                 self.symbols.append(i)  
         self.symbols = sorted(self.symbols)
         
@@ -53,7 +53,7 @@ class Construction:
                 B = self.stackAFN.pop()
                 NewAFN = self.UnionExp(B, A)
                 self.stackAFN.append(NewAFN)
-            elif (element == '*'):
+            elif (element in '*+?'):
                 A = self.stackAFN.pop()
                 if (len(self.stackAFN) > 0):
                     Comprobacion = self.stackAFN.pop() 
@@ -102,8 +102,11 @@ class Construction:
                 self.stackAFN.append(NewAFN)
             
         AFN = self.stackAFN.pop()
-        # self.printResults(AFN)
-        SortedAFN = sorted(AFN, key=itemgetter(0, 2))
+        #self.printResults(AFN)
+        if len(AFN) == 3 and isinstance(AFN[0], int):
+            SortedAFN = AFN
+        else:
+            SortedAFN = sorted(AFN, key=itemgetter(0, 2))
                 
         return SortedAFN
                 
@@ -543,6 +546,7 @@ class Construction:
 # rs.append(r12)
 
 # for r in rs:
-#     N = Construction(r)
+#     Cons = Construction(r)
+#     N = Cons.Thompson_Construction()
     
            

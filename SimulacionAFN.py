@@ -15,7 +15,7 @@ def intersection(lst1, lst2):
 	lst3 = [value for value in lst1 if value in lst2]
 	return lst3
 
-def Simulation(r, w):
+def SimulationAFN(r, w):
     Constr = Construction(r)
     AFN = Constr.Thompson_Construction()
     States = Constr.states
