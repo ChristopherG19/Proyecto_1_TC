@@ -27,8 +27,6 @@ class AFD():
 
         Dstates_marked = []
 
-        # [qi, e, qf]
-
         # Si no todos los estados de Dstates están marcados (en Dstates_marked) se continúa
         while (not all(t in Dstates_marked for t in Dstates)):
             for t in Dstates:
@@ -38,7 +36,7 @@ class AFD():
                 for a in self.Symbols:
                     U = []
 
-                        # Buscamos en todo el árbol por las posiciones que tengan el símbolo
+                    # Buscamos en todo el árbol por las posiciones que tengan el símbolo
                     for x in t:
                         if arbol.States[x].getSymbol() == a:
                             # Si no está en el estado, se añade
@@ -68,7 +66,7 @@ class AFD():
                     t.append(element)
             temp_afd.append(t)
 
-        # Remplazamos
+        # Remplazamos AFD para conseguir correcto
         self.afd = temp_afd
 
         # Guardamos todos los estados
@@ -79,7 +77,7 @@ class AFD():
         for x in self.afd:
             if(x[2] not in self.Dstates):
                 self.Dstates.append(x[2])
-            
+
 
     def simulation(self, w):
 
@@ -88,9 +86,10 @@ class AFD():
 
         s = self.afd[0][0]
         i = 0
-        c = w[i]
+        
 
-        while (i < len(w) and s):
+        while (i <= (len(w) - 1) and s):
+            c = w[i]
             s = self.move(s, c)
             i += 1
 
@@ -101,17 +100,24 @@ class AFD():
             print("sí")
 
     def move(self, state, char):
-        newState = NULL
+        newState = NULL # Retorna 
         for q in self.afd:
             #por cada estado en el AFD, buscar si alguno tiene transición con la letra
             if (q[0] == state):
                 if (q[1] == char):
+                    # Si hayn
                     newState = q[2]
         return newState
 
 
     def minimization(self):
-        """"""
+
+        # separamos los estados de aceptación y los que no son
+        G1 = [] # Estados de aceptación
+        G2 = [] # Otros estados
+
+        
+
 
 
     def detSymbols(self, arbol):
@@ -123,24 +129,35 @@ class AFD():
         return Symbols
 
 
+# _________________________________________
+# pruebas 
+# _________________________________________
 
-# pruebas
 #r = 'ab*ab*#'
 #r = '(aa*)|(bb*)#'
 #r = '(a|b)*(a|b)*a?#'
 
-r = '(aa|bb)*#'
-w = 'aabba'
+#r = '(aa|bb)*#'
+#w = 'aabbaab'
+
+#r = '(a(a|b)b)*#'
+#w = 'abbaab'
+
+r = 'a(a|b)*#'
+w = 'aaab'
 
 #r = 'a(a|b)*#'
 #r = '(a|b)|(abab)'
 #r = '0(0|1)0#'
 #r = '0*(0*|1)1#'
+
+
 arbol = Tree(r)
-#print()
-#print(arbol)
+print()
+print(arbol)
 dfa = AFD()
 dfa.directConstruction(arbol)
 for x in dfa.afd:
     print(x)
+print()
 dfa.simulation(w)
