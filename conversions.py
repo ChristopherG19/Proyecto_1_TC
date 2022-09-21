@@ -8,27 +8,31 @@
 # This code is contributed by Nikhil Kumar Singh(nickzuck_007)
 
 from stack import *
+from time import perf_counter
 
+# Clase donde se realiza la conversión de Infix a Postfix
 class Conversion(object):
+    # Constructor que define valores para la precedencia y los operadores que se utilizan
     def __init__(self, expression):
         self.infix = expression
         self.precedencia = {'*': 5, '?': 5, '+': 5, '.': 4, '|': 3, '(': 0}
         self.operators = ['+', '*', '?', '|']
         
-    def __getExpression__(self):
-        return self.infix
-    
+    # Retorna la precedencia de un valor
     def __getPrecedence__(self, element):
         if (self.precedencia.get(element) == None):
             return 5
         else:
             return self.precedencia.get(element)
         
+    # Método que se enfoca en la conversión
     def infixToPostfix(self):
         postfixExp = ""
         postfixElements = ""
         CantElements = len(self.infix)
         
+        # Se revisa la expresión y se agregan a un String temporal
+        # que almacena la expresión con concatenaciones explícitas
         for element in range(CantElements):
             el1 = self.infix[element]
             if ((element + 1) < len(self.infix)):
@@ -42,6 +46,8 @@ class Conversion(object):
         
         stack = Stack()
         
+        # Con ayuda de un stack se evalua el string temporal
+        # y se ordena dependiendo de la precedencia 
         for i in postfixElements:
             if (i == '('):
                 stack.push(i)
@@ -71,4 +77,6 @@ class Conversion(object):
         while (not stack.isEmpty()):
             postfixExp += stack.pop()
             
+        # Se retorna la expresión en formato Postfix
         return postfixExp
+    

@@ -15,34 +15,36 @@ def intersection(lst1, lst2):
 	lst3 = [value for value in lst1 if value in lst2]
 	return lst3
 
+# Método de simulación: Recibe una expresión regular y una cadena a evaluar
 def SimulationAFN(r, w):
+    # Se crea el AFN y se obtienen elementos del mismo
     Constr = Construction(r)
     AFN = Constr.Thompson_Construction()
     States = Constr.states
-
     AcceptState = []
     AcceptState.append(list(States)[-1])
     
+    # Se inicia con el algoritmo de simulación
+    # Se realiza E-closure del símbolo inicial
     S = e_closure(AFN, list(States)[0])
     cadena = []
     for i in w:
         cadena.append(i)    
     cadena.reverse()
-    
-    #print("S inicial: ", S)
-    
+
     while(len(cadena) > 0):
         c = cadena.pop()  
         a = move(AFN, S, c)
         S = e_closure(AFN, a)
-        #print(S)
 
-    # print(FinalStates)
+    # Si la cadena es aceptada se retornará "sí", de lo contrario "no"
     if (intersection(S, AcceptState) != []):
-        return "Si"
+        return "si"
     else:
-        return "No"   
+        return "no"   
     
+# Método e_closure, extraído de los documentos de clase. 
+# Se obtienen todos los estados que son alcanzados por epsilon
 def e_closure(AFN, states):
     Result = []
     pila = []  
@@ -66,6 +68,8 @@ def e_closure(AFN, states):
     
     return Result
 
+# Método move, extraído de los documentos de clase. 
+# Se obtienen todos los estados que son alcanzados por el símbolo ingresado a partir de un estado
 def move(AFN, states, symbol):
     NewStates = []
     pila = []  

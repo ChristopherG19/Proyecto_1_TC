@@ -11,9 +11,12 @@ from conversions import *
 from stack import *
 from operator import itemgetter
 
+# Símbolo epsilon utilizado a lo largo de Thompson
 epsilon = '$'
 
+# Clase construction: Construye un autómata finito mediante una expresión regular y con construcción de Thompson
 class Construction:
+    # Constructor: Inicializa todos los elementos a utilizar
     def __init__(self, expression):
         self.expression = expression
         self.states = set()
@@ -23,8 +26,8 @@ class Construction:
         self.AFN = []
         self.numEstados = 0
 
+    # Método Thompson_Construction: Construye el AFN mediante con construcción de Thompson
     def Thompson_Construction(self):
-
         # Se obtienen los símbolos del alfabeto y se ordenan
         # $ representa epsilon
         for i in self.expression:
@@ -37,24 +40,35 @@ class Construction:
         self.postfixExp = self.Obj.infixToPostfix()
 
         for element in self.postfixExp:
-            #print(self.states, element)
-            #Dependiendo del elemento trabaja una operación diferente
-            #print("\nAFNS: ",self.stackAFN, "\nEl: ", element)
+            # Dependiendo del elemento trabaja una operación diferente
+            
+            # Si es un símbolo o epsilon crea un componente del tipo símbolo
             if (element in self.symbols or element == '$'):
                 NewAFN = self.symbol(element)
                 self.stackAFN.append(NewAFN)
+            
+            # Si es una concatenación se obtienen los valores a concatenar
+            # y se crea un componente del tipo concatenación    
             elif (element == '.'):
                 A = self.stackAFN.pop()
                 B = self.stackAFN.pop()
                 NewAFN = self.ConcatExp(B, A)
                 self.stackAFN.append(NewAFN)
+            
+            # Si es una unión se obtienen los valores a unir
+            # y se crea un componente del tipo unión  
             elif (element == '|'):
                 A = self.stackAFN.pop()
                 B = self.stackAFN.pop()
                 NewAFN = self.UnionExp(B, A)
                 self.stackAFN.append(NewAFN)
+                
+            # Si es una cerradura se obtiene el valor a utilizar
+            # y se crea un componente del tipo cerradura
             elif (element in '*+?'):
                 A = self.stackAFN.pop()
+                # Se evaluan diferentes casos dependiendo de que elemento tendrá la cerradura 
+                # y se retorna el valor final
                 if (len(self.stackAFN) > 0):
                     Comprobacion = self.stackAFN.pop()
                     if (not isinstance(Comprobacion[0], int) and not isinstance(A[0], int)):
@@ -109,18 +123,24 @@ class Construction:
                     
                 self.stackAFN.append(NewAFN)
 
+        # El último elemento (AFN) completo se obtiene al realizar el último pop al stack de AFN's (Componentes)
         AFN = self.stackAFN.pop()
+        # Se evaluan los estados con este método para revisar que todos estén bien
+        self.CheckStates(AFN)
         # Para imprimir resultados en dado caso se pruebe desde este archivo
         # Descomentar línea siguiente: 
-        self.CheckStates(AFN)
-        #self.printResults(AFN)
+        # self.printResults(AFN)
+        
+        # Se ordenan los valores para poder visualizarlos mejor
         if len(AFN) == 3 and isinstance(AFN[0], int):
             SortedAFN = AFN
         else:
             SortedAFN = sorted(AFN, key=itemgetter(0, 2))
 
+        # Finalmente se retorna el AFN para ser utilizado en otros archivos o funciones
         return SortedAFN
 
+    # Componente símbolo: Se crean relaciones del tipo NodoA-[simbolo]->NodoB
     def symbol(self, symbolT):
         self.numEstados += 1
         NodoA = self.numEstados
@@ -133,9 +153,9 @@ class Construction:
 
         return NewEstado
 
+    # Componente concatenación: Se crean las concatenaciones entre dos elementos
+    # y se corrijen los estados para que todos lleven un orden bueno
     def ConcatExp(self, AFN_A, AFN_B):
-        # print("\nA: ", AFN_A)
-        # print("\nB: ", AFN_B)
         self.numEstados -= 1
         AFN_C = []
         if (isinstance(AFN_A[0], int)):
@@ -143,6 +163,9 @@ class Construction:
         else:
             Start = AFN_A[0][0]-1
 
+        # Al igual que antes, se comprueban diversos casos dependiendo de los
+        # elementos o el orden utilizado y se procede a concatenar ambos elementos
+        
         if (not isinstance(AFN_A[0], int) and not isinstance(AFN_B[0], int)):
             if (AFN_A[-1][0] == AFN_B[0][0] and AFN_A[-1][2] == AFN_B[0][2]):
                 NTransitions = []
@@ -156,23 +179,14 @@ class Construction:
         if (len(AFN_A) > len(AFN_B) and len(AFN_A) != 3 and len(AFN_B) != 3):
             self.states.add(Start)
             self.states.remove(list(self.states)[-1])
-            #NewEstado = [AFN_B[0][0], AFN_B[1][1], AFN_B[0][0]+1]
-            # if (AFN_B[0][0]-1 == AFN_A[-1][2]):
-            #     temp2 = []
-            #     for trans in AFN_B:
-            #         temp2.append([trans[0]-1, trans[1], trans[2]-1])
-            #     AFN_B = temp2
-            #     self.states.remove(list(self.states)[-1])
-
             AFNB = sorted(AFN_B, key=itemgetter(0))
             AFN_B = AFNB
-            #print("CO: ",AFN_B)
-
+            
             for a in AFN_B:
                 self.states.add(a[0])
                 self.states.add(a[2])
                 AFN_A.append(a)
-            #AFN_A.append(NewEstado)
+                
             AFN_C = AFN_A
 
         elif (len(AFN_A) > len(AFN_B) and len(AFN_A) != 3 and len(AFN_B) == 3):
@@ -243,21 +257,23 @@ class Construction:
 
             AFN_C = NewAFN
 
-        #print("\nC: ", AFN_C)
+        #Se retorna el elemento resultante
         return AFN_C
 
+    # Componente unión: Se crean las uniones entre dos elementos
+    # y se corrijen los estados para que todos lleven un orden bueno
     def UnionExp(self, AFN_A, AFN_B):
-        # print("\nA Un: ", AFN_A)
-        # print("\nB Un: ", AFN_B)
         NewAFN =[]
         self.numEstados += 1
+        
+        # Se realizan verificaciones para saber que camino tomar
+        # dependiendo del orden y los elementos brindados
         if (isinstance(AFN_A[0], int)):
             Start = AFN_A[0]-1
             End = self.numEstados
 
             self.states.add(Start)
             self.states.add(End)
-            #print(Start, End)
 
             NewEstado = [Start, epsilon, AFN_A[0]]
             NewEstado2 = [AFN_A[2], epsilon, End]
@@ -278,15 +294,14 @@ class Construction:
                 temp.append([trans[0]+1, trans[1], trans[2]+1])
             AFN_A = temp
             OrderTransitions = sorted(AFN_A, key=itemgetter(0, 2))
+            
             Start = OrderTransitions[0][0]-1
             self.numEstados += 1
             End = self.numEstados
             AFN_A = OrderTransitions
+            
             self.states.add(Start)
             self.states.add(End)
-
-            #print(Start, End)
-            # print("\nA D: ", AFN_A)
 
             if (len(AFN_A) == len(AFN_B)):
                 temp2 = []
@@ -309,8 +324,6 @@ class Construction:
                 End = AFN_B[-1][-1]+1
                 self.states.add(End)
 
-                #print("s: ", Start, End)
-
                 NewEstado = [Start, epsilon, AFN_A[0][0]]
                 NewEstado2 = [Start, epsilon, AFN_B[0][0]]
 
@@ -326,10 +339,7 @@ class Construction:
                     NewAFN.append(b)
                 NewAFN.append(NewEstado4)
 
-                #print("N: ", NewAFN)
-
             else:
-                #print("B: ", AFN_B)
                 if (isinstance(AFN_B[0],int)):
                     AFN_B = [AFN_B[0]+1, AFN_B[1], AFN_B[2]+1]
 
@@ -353,9 +363,6 @@ class Construction:
                         temp2.append([trans[0]+1, trans[1], trans[2]+1])
                     AFN_B = temp2
 
-                    # print("\nA Un: ", AFN_A)
-                    # print("\nB Un: ", AFN_B)
-
                     NewEstado = [Start, epsilon, AFN_A[0][0]]
                     NewEstado2 = [Start, epsilon, AFN_B[0][0]]
 
@@ -371,15 +378,13 @@ class Construction:
                         NewAFN.append(b)
                     NewAFN.append(NewEstado4)
 
-                    #print("\nAN: ",NewAFN)
-
-        #print("\nAN: ",NewAFN)
-
+        # Retorna el nuevo componente de la unión
         return NewAFN
 
+    # Componente cerradura: Se crea la cerradura 
+    # y se corrijen los estados para que todos lleven un orden bueno
     def KleeneExp(self, AFN_A):
-        # print("\nA Kleene: ",AFN_A)
-        #print("Estado: ", self.numEstados)
+        #Dependiendo del valor que se se reciba toma un camino diferente
         if (isinstance(AFN_A[0], int)):
             Start = AFN_A[0]-1
             self.numEstados += 1
@@ -390,9 +395,6 @@ class Construction:
                 End += 1
                 self.states = {a+1 for a in self.states}
                 temp = []
-
-                # print("S: ",Start)
-                # print("E: ",End)
 
                 for trans in AFN_A:
                     temp.append([trans[0]+1, trans[1], trans[2]+1])
@@ -412,8 +414,6 @@ class Construction:
                 AFN_A.append(NewAFN4)
 
             else:
-                # print("S: ",Start)
-                # print("E: ",End)
                 NewA =[]
                 Start = AFN_A[0]-1
                 self.states.add(Start)
@@ -433,7 +433,6 @@ class Construction:
                 AFN_A = NewA
 
         else:
-            #print("Estado: ", self.numEstados)
             Start = AFN_A[0][0]-1
             self.numEstados += 1
             End = self.numEstados
@@ -443,10 +442,7 @@ class Construction:
                 End += 1
                 self.states = {a+1 for a in self.states}
                 temp = []
-
-                # print("S: ",Start)
-                # print("E: ",End)
-
+                
                 for trans in AFN_A:
                     temp.append([trans[0]+1, trans[1], trans[2]+1])
 
@@ -498,9 +494,11 @@ class Construction:
                 AFN_A = NewA
 
 
-        #print("\nA Kleene salida: ",AFN_A)
+        # Retorna el AFN con su cerradura
         return AFN_A
     
+    # Método que revisa los estados finales obtenidos para
+    # comprobar que sean coherentes con las transiciones
     def CheckStates(self, Transitions):
         self.Init = 0
         self.Last = 0
@@ -532,6 +530,7 @@ class Construction:
             self.Init = list(self.states)[0]
             self.Last = list(self.states)[-1]
 
+    # Método para imprimir resultados
     def printResults(self, Transitions):   
         print("\nInfix: ", self.expression)
         print("Postfix: ",self.postfixExp)
@@ -541,6 +540,7 @@ class Construction:
         print("Estado de aceptacion = ",self.Last)
         self.printTransitions(Transitions)
 
+    # Método para imprimir en el formato requerido las transiciones
     def printTransitions(self, Transitions):
         x = ""
         TransitionsN = []
@@ -570,41 +570,4 @@ class Construction:
 
         print("Transiciones: "+ " - ".join(TransitionsN))
         print()
-
-# r1 = "a"
-# r2 = "ab"
-# r3 = "aab"
-# r4 = "(0|1)"
-# r5 = "a*"
-# r6 = "(a|b)*"
-# r7 = "0(0|1)0"
-# r8 = "0*(0*|1)1"
-# r9 = "0*11*0"
-# r10 = "(b|b)*abb(a|b)*"
-# r11 = "(a|b)*|(a|b)*"
-# r12 = "((a|b)|(abab))|a"
-# r13 = "ab*ab*"
-# r14 = "(a|b)*(abba*|(ab)*ba)"
-r15 = "(a|b)$"
-
-rs = []
-# rs.append(r1)
-# rs.append(r2)
-# rs.append(r3)
-# rs.append(r4)
-# rs.append(r5)
-# rs.append(r6)
-# rs.append(r7)
-# rs.append(r8)
-# rs.append(r9)
-# rs.append(r10)
-# rs.append(r11)
-# rs.append(r12)
-# rs.append(r13)
-# rs.append(r14)
-rs.append(r15)
-
-for r in rs:
-    Cons = Construction(r)
-    N = Cons.Thompson_Construction()
 
