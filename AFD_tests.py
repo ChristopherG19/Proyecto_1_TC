@@ -54,8 +54,7 @@ t2_start = perf_counter()
 dfa = AFD()
 dfa.directConstruction(arbol)
 t2_stop = perf_counter()
-for x in dfa.afd:
-    print(x)
+print(dfa)
 print('tiempo de ejecución: %.4e ms'%(t2_stop - t2_start))
 
 # --------------------------------------------------
@@ -71,12 +70,11 @@ print('tiempo de ejecución: %.4e ms'%(t3_stop - t3_start))
 
 # --------------------------------------------------
 # Minimización
-print('\Minimización')
+print('\nMinimización')
 t4_start = perf_counter()
 dfa.minimization()
 t4_stop = perf_counter()
-for x in dfa.afd:
-    print(x)
+print(dfa)
 print('tiempo de ejecución: %.4e ms'%(t4_stop - t4_start))
 
 # --------------------------------------------------
@@ -90,4 +88,18 @@ else:
 t5_stop = perf_counter()
 print('tiempo de ejecución: %.4e ms'%(t5_stop - t5_start))
 
-print()
+print('\nAFN -> AFD')
+states = [
+    ['q0', '0', 'q1'],
+    ['q0', '1', 'q2'],
+    ['q1', '0', 'q1'],
+    ['q1', '1', 'q3'],
+    ['q2', '1', 'q4'],
+    ['q3', '1', 'q4'],
+    ['q3', '0', None]
+] 
+EA = [True, False]
+r = '0*(0*|1)1#'
+dfa2 = AFD(states, EA, r) 
+print(dfa2)
+print(dfa.Symbols)

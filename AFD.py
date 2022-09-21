@@ -7,7 +7,7 @@
 from Tree import *
 
 class AFD():
-    def __init__(self, Transitions = None, Symbols = None, Final_States = None):
+    def __init__(self, Transitions = None, Final_States = None, regex = None):
         self.afd = []
         self.EA = []
         self.Dstates = []
@@ -15,9 +15,22 @@ class AFD():
         self.STree = []
 
         # Si se le dan parámetros, se puede construir sin la construcción directa
-        if (Transitions and Symbols and Final_States):
+        if (Transitions and regex and Final_States):
 
-            self.afd = Transitions
+            for t in Transitions:
+                if (t[2] != None):
+                    # Si no vienen transiciones que no llevan a ningún lado
+                    self.afd.append(t)
+                if (t[1] and t[1] not in self.Symbols):
+                    self.Symbols.append(t[1])
+
+
+
+    def __repr__(self):
+        retString = ''
+        for s in self.afd:
+            retString += '(' + s[0] + ' - ' + s[1] + ' - ' + s[2] + ')\n'
+        return retString
             
 
     def directConstruction(self, arbol):
@@ -222,7 +235,6 @@ class AFD():
 
         self.EA = []
         self.EA = new_EA
-
 
         # Renombrar variables y reconstruir las transiciones
         afd_temp = []
