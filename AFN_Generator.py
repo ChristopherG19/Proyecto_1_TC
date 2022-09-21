@@ -25,6 +25,7 @@ class Construction:
         self.stackAFN = []
         self.AFN = []
         self.numEstados = 0
+        self.FinalTransitions = []
 
     # Método Thompson_Construction: Construye el AFN mediante con construcción de Thompson
     def Thompson_Construction(self):
@@ -567,7 +568,8 @@ class Construction:
             for t in range(len(OrderTransitions)):
                 x = '(' + str(OrderTransitions[t][0]) + ', ' + str(OrderTransitions[t][1]) + ', ' + str(OrderTransitions[t][2]) + ')'
                 TransitionsN.append(x)
-
+                
+        self.FinalTransitions = " - ".join(TransitionsN)
         print("Transiciones: "+ " - ".join(TransitionsN))
         print()
 

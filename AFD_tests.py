@@ -193,7 +193,21 @@ print('tiempo de ejecución: %.4e s'%(t8_stop - t8_start))
 print()
 # --------------------------------------------------
 
+lines2 = [
+    'AFN',
+    'Estados = %s'%Cons.states,
+    'Simbolos = %s'%Cons.symbols,
+    'Inicio = %s'%list(Cons.symbols)[0],
+    'Aceptacion = %s'%list(Cons.symbols)[-1],
+    'Transiciones = %s'%Cons.FinalTransitions
+]
 
+# Escribir a un archivo
+with open('AFN.txt', 'w') as f:
+    for line in lines2:
+        f.write(line)
+        f.write('\n')
+        
 lines = [
     'AFD',
     'Estados = %s'%dfa2.Dstates,
