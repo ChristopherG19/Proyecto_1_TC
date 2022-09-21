@@ -35,36 +35,36 @@ from time import perf_counter
 # pruebas 
 # _________________________________________
 
-# r = 'ab*ab*#'
+# r = 'ab*ab*'
 # w = 'aa'
 
-# r = '(aa*)|(bb*)#'
-# r = '(a|b)*(a|b)*a?#'
+# r = '(aa*)|(bb*)'
+# r = '(a|b)*(a|b)*a?'
 
 # Expresión ya minimizada
-# r = '(aa|bb)*#'
+# r = '(aa|bb)*'
 # w = 'aabbaa'
 
 # Expresión ya minimizada
-# r = '(a(a|b)b)*#'
+# r = '(a(a|b)b)*'
 # w = 'abbaab'
 
-# r = 'a(a|b)*#'
-# w = 'aaab'
+r = 'a(a|b)*'
+w = 'aaab'
 
-# r = 'a(a|b)*#'
+# r = 'a(a|b)*'
 # r = '(a|b)|(abab)'
 
 # Expresión ya minimizada
-# r = '0(0|1)0#'
+# r = '0(0|1)0'
 # w = '000'
 
 # Da no simplificado 
-r = '0*(0*|1)1'
-w = '00000011'
+# r = '0*(0*|1)1'
+# w = '00000011'
 
 # 
-# r = '00*1110(0|1*)#'
+# r = '00*1110(0|1*)'
 # w = '01110111'
 
 # --------------------------------------------------
