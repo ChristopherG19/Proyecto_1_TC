@@ -7,7 +7,6 @@
 # Base de construcción de Thompson: https://medium.com/swlh/visualizing-thompsons-construction-algorithm-for-nfas-step-by-step-f92ef378581b
 
 # Import de los otros archivos
-from inspect import Traceback
 from conversions import *
 from stack import *
 from operator import itemgetter
