@@ -55,6 +55,7 @@ dfa = AFD()
 dfa.directConstruction(arbol)
 t2_stop = perf_counter()
 print(dfa)
+print(dfa.getFinalStates())
 print('tiempo de ejecución: %.4e ms'%(t2_stop - t2_start))
 
 # --------------------------------------------------
@@ -98,8 +99,26 @@ states = [
     ['q3', '1', 'q4'],
     ['q3', '0', None]
 ] 
-EA = [True, False]
+EA = ['q3', 'q4']
 r = '0*(0*|1)1#'
-dfa2 = AFD(states, EA, r) 
+istate = ['q0']
+dfa2 = AFD(states, EA, r, istate) 
 print(dfa2)
 print(dfa.Symbols)
+print(dfa2.Dstates)
+print(dfa2.EA)
+
+lines = [
+    'AFD',
+    'Estados = %s'%dfa2.Dstates,
+    'Simbolos = %s'%dfa2.Symbols,
+    'Inicio = %s'%dfa2.initState,
+    'Aceptacion = %s'%dfa2.getFinalStates(),
+    'Transiciones = %s'%dfa2
+]
+
+# Escribir a un archivo
+with open('AFD.txt', 'w') as f:
+    for line in lines:
+        f.write(line)
+        f.write('\n')

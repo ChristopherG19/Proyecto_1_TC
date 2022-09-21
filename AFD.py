@@ -7,29 +7,45 @@
 from Tree import *
 
 class AFD():
-    def __init__(self, Transitions = None, Final_States = None, regex = None):
+    def __init__(self, Transitions = None, Final_States = None, regex = None, init_state = None):
         self.afd = []
         self.EA = []
+        self.FinalStates = []
         self.Dstates = []
         self.Symbols = []
         self.STree = []
+        self.initState = []
 
         # Si se le dan parámetros, se puede construir sin la construcción directa
-        if (Transitions and regex and Final_States):
+        if (Transitions and regex and Final_States and init_state):
+
+            self.initState = init_state
 
             for t in Transitions:
                 if (t[2] != None):
                     # Si no vienen transiciones que no llevan a ningún lado
                     self.afd.append(t)
+                
                 if (t[1] and t[1] not in self.Symbols):
                     self.Symbols.append(t[1])
 
+                if (t[0] not in self.Dstates and t[0] != None):
+                    self.Dstates.append(t[0])
+
+                if (t[2] not in self.Dstates and t[2] != None):
+                    self.Dstates.append(t[2])
+
+            for s in self.Dstates:
+                if (s in Final_States):
+                    self.EA.append(True)
+                else:
+                    self.EA.append(False)
 
 
     def __repr__(self):
         retString = ''
         for s in self.afd:
-            retString += '(' + s[0] + ' - ' + s[1] + ' - ' + s[2] + ')\n'
+            retString += '- (' + s[0] + ', ' + s[1] + ', ' + s[2] + ') -'
         return retString
             
 
@@ -97,6 +113,9 @@ class AFD():
         for x in self.afd:
             if(x[2] not in self.Dstates):
                 self.Dstates.append(x[2])
+
+        # Definimos el estado inicial
+        self.initState = self.Dstates[0]
 
 
     def simulation(self, w):
@@ -276,5 +295,15 @@ class AFD():
                 Symbols.append(n.getSymbol())
         
         return Symbols
+    
+    def getFinalStates(self):
+        retList = []
+        for x in range(len(self.EA)):
+            if (self.EA[x]):
+                retList.append(self.Dstates[x])
+        
+        self.FinalStates = retList
+        return retList
+
 
 
