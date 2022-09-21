@@ -4,178 +4,306 @@
 # CC2019 Teoría de la computación
 # Grupo#9 
 
-from conversions import *
+from Tree import *
 
 class AFD():
-    def __init__(self, arbol):
-        """"""
+    def __init__(self, Transitions = None, Final_States = None, regex = None, init_state = None):
+        self.afd = []
+        self.EA = []
+        self.FinalStates = []
+        self.Dstates = []
+        self.Symbols = []
+        self.STree = []
+        self.initState = []
 
-class Node():
-    def __init__(self, symbol, no, pos = None):
-        self.symbol = symbol
-        self.no = no
-        self.pos = pos
-        self.nullable = False
-        self.firstpos = []
-        self.lastpos = []
-        self.nextpos = []
-        self.leftpos = 0
-        self.rightpos = 0
+        # Si se le dan parámetros, se puede construir sin la construcción directa
+        if (Transitions and regex and Final_States and init_state):
 
-        if pos:
-            self.firstpos.append(pos)
-            self.lastpos.append(pos)
+            self.initState = init_state
 
-        if (self.symbol == '*' or self.symbol == '?' or self.symbol == '$'):
-            self.nullable = True
-        
-    def __repr__(self):
-        return (self.symbol + ', ' + str(self.no) + ', ' + str(self.firstpos) + ', ' + str(self.lastpos) + ', ' + str(self.nullable))
-
-    def set_firstpos(self, fp):
-        self.firstpos = fp
-
-    def set_lastpos(self, lp):
-        self.lastpos = lp
-
-    def set_nextpos(self, np):
-        self.nextpos = np
-
-    def set_left(self, left):
-        self.leftpos = left
-
-    def set_right(self, right):
-        self.rightpos = right
-
-    def get_symbol(self):
-        return self.symbol
-
-    def get_no(self):
-        return self.no
-
-    def get_pos(self):
-        return self.pos
-
-    def get_firstpos(self):
-        return self.firstpos
-
-    def get_lastpos(self):
-        return self.lastpos
-
-    def get_nextpos(self):
-        return self.nextpos
-
-    def left(self):
-        return self.leftpos
-    
-    def right(self):
-        return self.rightpos
-
-
-class SyntaxTree():
-    def __init__(self, expresion):
-        self.regex = expresion
-        self.elements = []
-        self.stack = []
-        self.dictionary = []
-        self.tree = []
-
-        # Conversión a posfix
-        self.Obj = Conversion(self.regex)
-        self.postfixExp = self.Obj.infixToPostfix()
-        for a in (self.postfixExp):
-            self.stack.append(a)
-
-        # Obtención del diccionario
-        for x in self.postfixExp:
-            if (x not in '().*+|$'):
-                self.elements.append(x)
-                if (x not in self.dictionary):
-                    self.dictionary.append(x)
-
-
-        print("stack: ", self.stack)
-
-        # creación de nodos
-        self.nodes = []
-        n = 0
-        p = 1
-        for x in (self.stack):
-            temp = 0
-            if (x not in '().*+|$'):
-                temp = Node(x, n, p)
-                n += 1
-                p += 1
-            else:
-                temp = Node(x, n)
-                n += 1
-            self.nodes.append(temp)
-
-        # Se le sa vuelta a los nodos
-        self.nodes = list(reversed(self.nodes))
-
-        for n in (self.nodes):
-            print(n)
-            """"""
-        
-        print()
-
-        # Obtener el lado derecho e izquierdo de cada lado
-        self.getLeftRight()
-
-
-    def getLeftRight(self):
-        
-        # copia de nodes para saber cuáles ya se han asignado
-        nodos_used = []
-
-        for x in range(len(self.nodes)):
-            no_nodo = self.nodes[x].get_no() #número del nodo 
-            print()
-            print(self.nodes[x])
-            if (self.nodes[x].get_symbol() in '|?*+.'):
+            for t in Transitions:
+                if (t[2] != None):
+                    # Si no vienen transiciones que no llevan a ningún lado
+                    self.afd.append(t)
                 
-                # asignar lado derecho
-                for n in self.nodes:
-                    if (n.get_no() == no_nodo-1):
-                        self.nodes[x].set_right(n)
-                        # si es unario se agrega también como su lado izquierdo
-                        if (self.nodes[x].get_symbol() in '?*+'):
-                            self.nodes[x].set_left(n)
-                        # se agrega a los nodos usados (para determinar la izquierda)
-                        nodos_used.append(n)
+                if (t[1] and t[1] not in self.Symbols):
+                    self.Symbols.append(t[1])
 
-                # asignar lado izquierdo
-                check = True
-                i = 1 # Se salta el primero porque es la raiz
-                while (check):
-                    # si ya fue usado antes (en la derecha), saltar
-                    if (self.nodes[i] in nodos_used):
-                        if (i < len(self.nodes)):
-                            i += 1
-                        # Si se pasa de la lista, salir del while
-                        else:
-                            check = False
+                if (t[0] not in self.Dstates and t[0] != None):
+                    self.Dstates.append(t[0])
+
+                if (t[2] not in self.Dstates and t[2] != None):
+                    self.Dstates.append(t[2])
+
+            for s in self.Dstates:
+                if (s in Final_States):
+                    self.EA.append(True)
+                else:
+                    self.EA.append(False)
+
+
+    def __repr__(self):
+        retString = ''
+        for s in self.afd:
+            retString += '- (' + s[0] + ', ' + s[1] + ', ' + s[2] + ') -'
+        return retString
+            
+
+    def directConstruction(self, arbol):
+
+        self.STree = arbol
+
+        # Alfabeto de la expresión regex
+        self.Symbols = self.detSymbols(arbol)
+
+        # Firstpos de la raíz
+        cant_n = len(arbol.Arbol)
+        Dstates = []
+        Dstates.append(arbol.Arbol[cant_n - 1].firstpos)
+
+        Dstates_marked = []
+
+        # Si no todos los estados de Dstates están marcados (en Dstates_marked) se continúa
+        while (not all(t in Dstates_marked for t in Dstates)):
+            for t in Dstates:
+                # Se marca el estado actual
+                Dstates_marked.append(t)
+
+                for a in self.Symbols:
+                    U = []
+
+                    # Buscamos en todo el árbol por las posiciones que tengan el símbolo
+                    for x in t:
+                        if arbol.States[x].getSymbol() == a:
+                            # Si no está en el estado, se añade
+                            for e in arbol.States[x].followpos:
+                                if (e not in U):
+                                    U.append(e)
                     
-                    # si no ha sido utilizado
+                    if (len(U) > 0):
+                        if (U not in Dstates):
+                            Dstates.append(U)
+
+                        self.afd.append([t, a, U])
+
+        # Determinamos estados de aceptación
+        self.EA = [(len(arbol.States) - 1) in x for x in Dstates]
+
+        # Renombramos los estados 
+        newStates = ["q%s"%x for x in range(len(Dstates))]
+
+        temp_afd = []
+        for trans in self.afd:
+            t = []
+            for element in trans:
+                if (element in Dstates):    
+                    t.append(newStates[Dstates.index(element)])
+                else:
+                    t.append(element)
+            temp_afd.append(t)
+
+        # Remplazamos AFD para conseguir correcto
+        self.afd = temp_afd
+
+        # Guardamos todos los estados
+        for x in self.afd:
+            if(x[0] not in self.Dstates):
+                self.Dstates.append(x[0])
+
+        for x in self.afd:
+            if(x[2] not in self.Dstates):
+                self.Dstates.append(x[2])
+
+        # Definimos el estado inicial
+        self.initState = self.Dstates[0]
+
+
+    def simulation(self, w):
+
+        if (type(w) != list):
+            w = list(w)
+
+        s = self.afd[0][0]
+        i = 0
+        
+
+        while (i <= (len(w) - 1) and s):
+            c = w[i]
+            s = self.move(s, c)
+            i += 1
+
+        if (s == NULL or not self.EA[self.Dstates.index(s)]):
+            return False
+
+        else:
+            return True
+
+    def move(self, state, char):
+        newState = NULL # Retorna 
+        for q in self.afd:
+            #por cada estado en el AFD, buscar si alguno tiene transición con la letra
+            if (q[0] == state):
+                if (q[1] == char):
+                    # Si hayn
+                    newState = q[2]
+        return newState
+
+
+    def minimization(self):
+        G = [[]]
+        for x in self.Dstates:
+            G[0].append(x)
+
+        tabla = []
+        GG_new = []
+        ciclo = True 
+        iteracion = 0
+
+        while (ciclo):
+
+            # vaciar tabla
+            tabla = []
+                
+            # Encontrar a dónde van los estados de cada grupo
+            for g in G:
+
+                tabla_t = []
+                # iniciamos la tabla con los estados dentro del grupo g
+                for x in range(len(g)):
+                    tabla_t.append([g[x]])
+
+                # Agregamos a los estados que llegan con cada símbolo del alfabeto
+                for x in tabla_t:
+                    # x[0] := qn
+                    for a in self.Symbols:
+                        trans_a = ''
+                        for t in self.afd:
+                            if (x[0] == t[0] and a == t[1]):
+                                trans_a = t[2]
+                        # Añadir al estado al que llega con el símbolo
+                        x.append(trans_a)
+
+                # Agregamos al grupo en el que pertenecen esos estados
+                # que agregamos
+                for x in tabla_t:
+                    # Por los símbolos del alfabeto
+                    for a in range(len(self.Symbols)):
+                        # Índice en el que se agregará en la tabla
+                        i_look = (1 + a)
+
+                        trans_g = []
+
+                        # Buscar en los nuevos conjuntos
+                        for g2 in G:
+                            if (x[i_look] in g2):
+                                trans_g = g2
+
+                        x.append(trans_g)
+
+                # Agrupamos los que son iguales
+                G_temp = []
+                conjunto_estados_finales = []
+                for x in tabla_t:
+
+                    estados_finales = []
+                    for a in range(len(self.Symbols)):
+                        i_look = (1 + len(self.Symbols) + a)
+                        estados_finales.append(x[i_look])
+
+                    # Determinar si hay otros estados con los mismos estados finales
+                    if (estados_finales in conjunto_estados_finales):
+                        # si ya estaba, juntar los estados
+                        G_temp[conjunto_estados_finales.index(estados_finales)].append(x[0])
                     else:
-                        # verificar que no sea unario y que no se le haya establecido un lado iquierdo antes
-                        if (self.nodes[x].left() == 0):
-                            """
-                            Es necesario reforzar más esta parte para que no tome lados izquierdos de las
-                            ramas de su lado derecho!!!
-                            
-                            """
-                            self.nodes[x].set_left(self.nodes[i])
-                            nodos_used.append(self.nodes[i])
-                        check = False
+                        # Crear un nuevo conjunto
+                        G_temp.append([x[0]])
+                        conjunto_estados_finales.append(estados_finales)
 
-                print("derecha: ", self.nodes[x].right())
-                print("iz: ", self.nodes[x].left())
+                if (g in GG_new):
+                    # Si ya estaba, se elimina
+                    GG_new.remove(g)
 
-    def get_lastpos(self):
-        """"""
+                GG_new += G_temp
+                
+                # guardar los datos de la tabla
+                tabla += tabla_t
 
-r = '(a|b)*a#'
-afd = SyntaxTree(r)
+            #GG_new = G   
+            # break
+            iteracion += 1   
+
+            # Verificar ciclo 
+            if (not all(q in GG_new for q in G)):
+                G = []
+                for g in GG_new:
+                    G.append(g)
+
+            else:
+                ciclo = False   
+
+        # Conseguir nuevos estados de aceptación
+        new_EA = []
+        for x in G:
+            aceptacion = False
+            for y in x:
+                if (self.EA[self.Dstates.index(y)]):
+                    aceptacion += True
+                else:
+                    aceptacion += False
+            new_EA.append(bool(aceptacion))
+
+        self.EA = []
+        self.EA = new_EA
+
+        # Renombrar variables y reconstruir las transiciones
+        afd_temp = []
+        for t in G:
+            for x in tabla:
+                if (t[0] == x[0]):
+                    for a in range(len(self.Symbols)):
+                        i_look = 1 + len(self.Symbols) + a
+                        U = x[i_look]
+                        if (len(U) > 0):
+                            add = [t, self.Symbols[a], U]
+                            afd_temp.append(add)
+
+        # Renombramos los estados 
+        newStates = ["q%s"%x for x in range(len(G))]
+
+        temp_afd = []
+        for trans in afd_temp:
+            t = []
+            for element in trans:
+                if (element in G):    
+                    t.append(newStates[G.index(element)])
+                else:
+                    t.append(element)
+            temp_afd.append(t)
+
+        # Remplazamos AFD para conseguir correcto
+        self.afd = []
+        self.afd = temp_afd
+
+        # Guardamos todos los estados
+        self.Dstates = []
+        self.Dstates = newStates
+
+    def detSymbols(self, arbol):
+        Symbols = []
+        for n in arbol.States:
+            if (n.getSymbol() not in Symbols and n.getSymbol() != '#'):
+                Symbols.append(n.getSymbol())
+        
+        return Symbols
     
+    def getFinalStates(self):
+        retList = []
+        for x in range(len(self.EA)):
+            if (self.EA[x]):
+                retList.append(self.Dstates[x])
+        
+        self.FinalStates = retList
+        return retList
+
+
+
