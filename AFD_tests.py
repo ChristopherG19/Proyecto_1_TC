@@ -1,5 +1,6 @@
+from pprint import pprint
 from AFD import *
-
+from time import perf_counter
 
 # _________________________________________
 # pruebas 
@@ -37,39 +38,56 @@ w = '000000111'
 # r = '00*1110(0|1*)#'
 # w = '01110111'
 
+# --------------------------------------------------
 # Construcción del árbol sintáctico
+print('\nÁrbol sintáctico')
+t1_start = perf_counter()
 arbol = Tree(r)
-print()
-print('Árbol sintáctico')
+t1_stop = perf_counter()
 print(arbol)
+print('tiempo de ejecución: %.4e ms'%(t1_stop - t1_start))
 
+# --------------------------------------------------
 # Construcción directa
+print('\nConstrucción directa')
+t2_start = perf_counter()
 dfa = AFD()
 dfa.directConstruction(arbol)
-print('Construcción directa')
+t2_stop = perf_counter()
 for x in dfa.afd:
     print(x)
-print()
+print('tiempo de ejecución: %.4e ms'%(t2_stop - t2_start))
 
+# --------------------------------------------------
 # Simulación de cadenas
-print('Simulación')
+print('\nSimulación')
+t3_start = perf_counter()
 if (dfa.simulation(w)):
-    print('sí')
+    print('El string %s pertenece al AFD'%w)
 else:
-    print('no')
-print()
+    print('El string %s no pertenece al AFD'%w)
+t3_stop = perf_counter()
+print('tiempo de ejecución: %.4e ms'%(t3_stop - t3_start))
 
+# --------------------------------------------------
 # Minimización
-print('Minimización')
+print('\Minimización')
+t4_start = perf_counter()
 dfa.minimization()
+t4_stop = perf_counter()
 for x in dfa.afd:
     print(x)
-print()
+print('tiempo de ejecución: %.4e ms'%(t4_stop - t4_start))
 
+# --------------------------------------------------
 # Simulación de cadenas
-print('Simulación')
+print('\nSimulación')
+t5_start = perf_counter()
 if (dfa.simulation(w)):
-    print('sí')
+    print('El string %s pertenece al AFD'%w)
 else:
-    print('no')
+    print('El string %s no pertenece al AFD'%w)
+t5_stop = perf_counter()
+print('tiempo de ejecución: %.4e ms'%(t5_stop - t5_start))
+
 print()

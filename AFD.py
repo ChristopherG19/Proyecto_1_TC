@@ -7,12 +7,18 @@
 from Tree import *
 
 class AFD():
-    def __init__(self):
+    def __init__(self, Transitions = None, Symbols = None, Final_States = None):
         self.afd = []
         self.EA = []
         self.Dstates = []
         self.Symbols = []
         self.STree = []
+
+        # Si se le dan parámetros, se puede construir sin la construcción directa
+        if (Transitions and Symbols and Final_States):
+
+            self.afd = Transitions
+            
 
     def directConstruction(self, arbol):
 
