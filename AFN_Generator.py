@@ -130,7 +130,7 @@ class Construction:
         self.CheckStates(AFN)
         # Para imprimir resultados en dado caso se pruebe desde este archivo
         # Descomentar línea siguiente: 
-        self.printResults(AFN)
+        # self.printResults(AFN)
         
         # Se ordenan los valores para poder visualizarlos mejor
         if len(AFN) == 3 and isinstance(AFN[0], int):
