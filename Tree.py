@@ -9,6 +9,14 @@ class Tree():
         self.Arbol = []
         self.States = []
 
+        # revisar que tenga # al final de la cadena
+        rrev = list(regex)
+        rrev.reverse()
+        if (rrev[0] != '#'):
+            self.regex += '#'
+
+        print(self.regex)    
+
         # conversión de regex de infix a posfix
         self.Obj = Conversion(self.regex)
         self.postfixExp = self.Obj.infixToPostfix()

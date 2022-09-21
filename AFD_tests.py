@@ -31,7 +31,7 @@ from time import perf_counter
 # w = '000'
 
 # Da no simplificado 
-r = '0*(0*|1)1#'
+r = '0*(0*|1)1'
 w = '000000111'
 
 # 
