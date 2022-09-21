@@ -7,8 +7,8 @@
 # Main 
 from SimulacionAFN import *
 
-r = "(a|b)"
-w = "abb"
+r = "(a|b)$"
+w = "a"
 
 Resultado = SimulationAFN(r, w)
 print("\nExpresion regular:", r)

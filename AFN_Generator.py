@@ -113,7 +113,8 @@ class Construction:
         AFN = self.stackAFN.pop()
         # Para imprimir resultados en dado caso se pruebe desde este archivo
         # Descomentar línea siguiente: 
-        # self.printResults(AFN)
+        self.CheckStates(AFN)
+        #self.printResults(AFN)
         if len(AFN) == 3 and isinstance(AFN[0], int):
             SortedAFN = AFN
         else:
@@ -500,11 +501,10 @@ class Construction:
 
         #print("\nA Kleene salida: ",AFN_A)
         return AFN_A
-
-    def printResults(self, Transitions):
-               
-        Init = 0
-        Last = 0
+    
+    def CheckStates(self, Transitions):
+        self.Init = 0
+        self.Last = 0
                              
         if(-1 in self.states):
             self.states.remove(-1)
@@ -512,32 +512,34 @@ class Construction:
             self.states.add(N[-1]+1)
             
             N = sorted(list(self.states))
-            Init = N[0]
-            Last = N[-1]
-                             
+            self.Init = N[0]
+            self.Last = N[-1]
+
         if isinstance(Transitions[0], int):
             self.states.add(Transitions[0])
             self.states.add(Transitions[2])
-            Init = list(self.states)[0]
-            Last = list(self.states)[-1]
+            self.Init = list(self.states)[0]
+            self.Last = list(self.states)[-1]
         else:    
-            if (not any(list(self.states)[-1] in sublist for sublist in Transitions)):
-                if (list(self.states)[-1] in self.states):
-                    self.states.remove(list(self.states)[-1])
-            
+            for i in range(len(self.states)):
+                if (not any(list(self.states)[-1] in sublist for sublist in Transitions)):
+                    if (list(self.states)[-1] in self.states):
+                        self.states.remove(list(self.states)[-1]) 
+
             for a in Transitions:
                 self.states.add(a[0])
                 self.states.add(a[2])
                 
-            Init = list(self.states)[0]
-            Last = list(self.states)[-1]
-    
+            self.Init = list(self.states)[0]
+            self.Last = list(self.states)[-1]
+
+    def printResults(self, Transitions):   
         print("\nInfix: ", self.expression)
         print("Postfix: ",self.postfixExp)
         print("Estados = ", sorted(self.states))
         print("Simbolos = ", self.symbols)
-        print("Estado de inicio = ",Init)
-        print("Estado de aceptacion = ",Last)
+        print("Estado de inicio = ",self.Init)
+        print("Estado de aceptacion = ",self.Last)
         self.printTransitions(Transitions)
 
     def printTransitions(self, Transitions):
@@ -584,8 +586,9 @@ class Construction:
 # r12 = "((a|b)|(abab))|a"
 # r13 = "ab*ab*"
 # r14 = "(a|b)*(abba*|(ab)*ba)"
+r15 = "(a|b)$"
 
-# rs = []
+rs = []
 # rs.append(r1)
 # rs.append(r2)
 # rs.append(r3)
@@ -600,8 +603,9 @@ class Construction:
 # rs.append(r12)
 # rs.append(r13)
 # rs.append(r14)
+rs.append(r15)
 
-# for r in rs:
-#     Cons = Construction(r)
-#     N = Cons.Thompson_Construction()
+for r in rs:
+    Cons = Construction(r)
+    N = Cons.Thompson_Construction()
 
