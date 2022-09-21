@@ -74,7 +74,7 @@ def AFN_To_AFD_SC(r):
                 NewStates[NameState] = [i]
             else:
                 NewStates[NameState] = i
-                
+                       
     NewStates2 = []
     KeysA = []
     KeysB = []
@@ -114,14 +114,14 @@ def AFN_To_AFD_SC(r):
             if (Dstates_marked_WS[i][0] != [] and Dstates_marked_WS[i][2] == []):
                 KeysA.insert(i, None)
             elif (Dstates_marked_WS[i][0] != [] and Dstates_marked_WS[i][2] != []):
-                KeysA.insert(i, None)
+                continue
     
     if (len(KeysB) != realLen):
         for i in range(len(Dstates_marked_WS)):
             if (Dstates_marked_WS[i][0] != [] and Dstates_marked_WS[i][2] == []):
                 KeysB.insert(i, None)
             elif (Dstates_marked_WS[i][0] != [] and Dstates_marked_WS[i][2] != []):
-                KeysB.insert(i, None)
+                continue
 
     # Se crean las transiciones finales con los estados renombrados
     for i in range(realLen):
@@ -147,6 +147,7 @@ def printResultsAFD(InitState, AcceptState, NewStates2):
         if (NewStates2[t][2] != None):
             x = '(' + str(NewStates2[t][0]) + ', ' + str(NewStates2[t][1]) + ', ' + str(NewStates2[t][2]) + ')'
             trans.append(x)
+            
     # Se imprimen los resultados finales
     print("\nEstado de inicio =  ", InitState)
     print("Estados de aceptación = ", ", ".join(AcceptState))

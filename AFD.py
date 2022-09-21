@@ -7,7 +7,7 @@
 from Tree import *
 
 class AFD():
-    def __init__(self, Transitions = None, Final_States = None, regex = None, init_state = None):
+    def __init__(self, init_state = None, Final_States = None, Transitions = None, regex = None):
         self.afd = []
         self.EA = []
         self.FinalStates = []

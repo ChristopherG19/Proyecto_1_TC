@@ -28,8 +28,8 @@ from time import perf_counter
 # r = "((a|b)|(abab))|a"
 # r = "ab*ab*"
 # r = "(a|b)$"
-r2 = "(a|b)*(abba*|(ab)*ba)"
-w2 = "abbaaa"
+# r = "(a|b)*(abba*|(ab)*ba)"
+# w = "abbaaa"
 
 # _________________________________________
 # pruebas 
@@ -61,7 +61,7 @@ w2 = "abbaaa"
 
 # Da no simplificado 
 r = '0*(0*|1)1'
-w = '000000111'
+w = '00000011'
 
 # 
 # r = '00*1110(0|1*)#'
@@ -71,104 +71,128 @@ w = '000000111'
 # Construcción de AFN con Thompson
 print('\n--> Construcción AFN con construcción de Thompson')
 t1_start = perf_counter()
-Cons = Construction(r2)
+Cons = Construction(r)
 AFN_Thompson = Cons.Thompson_Construction()
 t1_stop = perf_counter()
 Cons.printResults(AFN_Thompson)
-print('Tiempo de ejecución: %.4e ms'%(t1_stop - t1_start))
+print('Tiempo de ejecución: %.4e s'%(t1_stop - t1_start))
 # --------------------------------------------------
 
 # --------------------------------------------------
 # Simulación de cadenas en AFN
 print('\n--> Simulación AFN')
-t1_start = perf_counter()
-ResultadoSimulacion = SimulationAFN(r2, w2)
-print("\nExpresion regular:", r2)
-print("Cadena a evaluar:", w2)
-print("Resultado: La cadena %s"%w2, ResultadoSimulacion, "es aceptada\n")
-t1_stop = perf_counter()
-print('Tiempo de ejecución: %.4e ms'%(t1_stop - t1_start))
+t2_start = perf_counter()
+ResultadoSimulacion = SimulationAFN(r, w)
+print("\nExpresion regular:", r)
+print("Cadena a evaluar:", w)
+print("Resultado: La cadena %s"%w, ResultadoSimulacion, "es aceptada\n")
+t2_stop = perf_counter()
+print('Tiempo de ejecución: %.4e s'%(t2_stop - t2_start))
 # --------------------------------------------------
 
 # --------------------------------------------------
 # Construcción de AFD con subconjuntos
 print('\n--> Construcción AFD con subconjuntos')
-t1_start = perf_counter()
-AFD_Subconjuntos = AFN_To_AFD_SC(r2)
+t3_start = perf_counter()
+AFD_Subconjuntos = AFN_To_AFD_SC(r)
 printResultsAFD(AFD_Subconjuntos[0], AFD_Subconjuntos[1], AFD_Subconjuntos[2])
-t1_stop = perf_counter()
-print('Tiempo de ejecución: %.4e ms'%(t1_stop - t1_start))
+t3_stop = perf_counter()
+print('Tiempo de ejecución: %.4e s'%(t3_stop - t3_start))
+# --------------------------------------------------
+
+# --------------------------------------------------
+# Simulación AFD construido por subconjuntos
+print('\n--> Simulación AFD por subconjuntos\n')
+t9_start = perf_counter()
+AFD_Subconjuntos = AFN_To_AFD_SC(r)
+dfa2 = AFD(*AFD_Subconjuntos) 
+if (dfa2.simulation(w)):
+    print('El string %s pertenece al AFD'%w)
+else:
+    print('El string %s no pertenece al AFD'%w)
+t9_stop = perf_counter()
+print('Tiempo de ejecución: %.4e s'%(t9_stop - t9_start))
+# --------------------------------------------------
+
+# --------------------------------------------------
+# Minimización AFD por subconjuntos
+print('\n--> Minimización AFD por subconjuntos\n')
+t10_start = perf_counter()
+dfa2.minimization()
+t10_stop = perf_counter()
+print(dfa2)
+print('tiempo de ejecución: %.4e s'%(t10_stop - t10_start))
+# --------------------------------------------------
+
+# --------------------------------------------------
+# Simulación de cadenas
+print('\n--> Simulación AFD por subconjuntos minimizado\n')
+t8_start = perf_counter()
+if (dfa2.simulation(w)):
+    print('El string %s pertenece al AFD'%w)
+else:
+    print('El string %s no pertenece al AFD'%w)
+t8_stop = perf_counter()
+print('tiempo de ejecución: %.4e s'%(t8_stop - t8_start))
 # --------------------------------------------------
 
 # --------------------------------------------------
 # Construcción del árbol sintáctico
-print('\nÁrbol sintáctico')
-t1_start = perf_counter()
+print('\n--> Árbol sintáctico')
+t4_start = perf_counter()
 arbol = Tree(r)
-t1_stop = perf_counter()
+t4_stop = perf_counter()
 print(arbol)
-print('tiempo de ejecución: %.4e ms'%(t1_stop - t1_start))
+print('tiempo de ejecución: %.4e s'%(t4_stop - t4_start))
 
 # --------------------------------------------------
 # Construcción directa
-print('\nConstrucción directa')
-t2_start = perf_counter()
+print('\n--> Construcción directa')
+t5_start = perf_counter()
 dfa = AFD()
 dfa.directConstruction(arbol)
-t2_stop = perf_counter()
+t5_stop = perf_counter()
 print(dfa)
-print(dfa.getFinalStates())
-print('tiempo de ejecución: %.4e ms'%(t2_stop - t2_start))
+print("Estados de aceptación: ", ", ".join(dfa.getFinalStates()))
+print('tiempo de ejecución: %.4e s'%(t5_stop - t5_start))
+# --------------------------------------------------
 
 # --------------------------------------------------
 # Simulación de cadenas
-print('\nSimulación')
-t3_start = perf_counter()
+print('\n--> Simulación AFD\n')
+t6_start = perf_counter()
 if (dfa.simulation(w)):
     print('El string %s pertenece al AFD'%w)
 else:
     print('El string %s no pertenece al AFD'%w)
-t3_stop = perf_counter()
-print('tiempo de ejecución: %.4e ms'%(t3_stop - t3_start))
+t6_stop = perf_counter()
+print('tiempo de ejecución: %.4e s'%(t6_stop - t6_start))
+
+# --------------------------------------------------
 
 # --------------------------------------------------
 # Minimización
-print('\nMinimización')
-t4_start = perf_counter()
+print('\n--> Minimización\n')
+t7_start = perf_counter()
 dfa.minimization()
-t4_stop = perf_counter()
+t7_stop = perf_counter()
 print(dfa)
-print('tiempo de ejecución: %.4e ms'%(t4_stop - t4_start))
+print('tiempo de ejecución: %.4e s'%(t7_stop - t7_start))
+# --------------------------------------------------
 
 # --------------------------------------------------
 # Simulación de cadenas
-print('\nSimulación')
-t5_start = perf_counter()
+print('\n--> Simulación AFD minimizado\n')
+t8_start = perf_counter()
 if (dfa.simulation(w)):
     print('El string %s pertenece al AFD'%w)
 else:
     print('El string %s no pertenece al AFD'%w)
-t5_stop = perf_counter()
-print('tiempo de ejecución: %.4e ms'%(t5_stop - t5_start))
+t8_stop = perf_counter()
+print('tiempo de ejecución: %.4e s'%(t8_stop - t8_start))
+print()
+# --------------------------------------------------
 
-print('\nAFN -> AFD')
-states = [
-    ['q0', '0', 'q1'],
-    ['q0', '1', 'q2'],
-    ['q1', '0', 'q1'],
-    ['q1', '1', 'q3'],
-    ['q2', '1', 'q4'],
-    ['q3', '1', 'q4'],
-    ['q3', '0', None]
-] 
-EA = ['q3', 'q4']
-r = '0*(0*|1)1#'
-istate = ['q0']
-dfa2 = AFD(states, EA, r, istate) 
-print(dfa2)
-print(dfa.Symbols)
-print(dfa2.Dstates)
-print(dfa2.EA)
 
 lines = [
     'AFD',
