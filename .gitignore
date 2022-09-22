@@ -130,3 +130,6 @@ dmypy.json
 
 # Txt files
 .txt
+
+# Zip
+.zip

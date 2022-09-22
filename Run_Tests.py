@@ -35,14 +35,6 @@ w = "bababaaaaa"
 # pruebas 
 # _________________________________________
 
-# Dice que no pertenece en el AFD construido por 
-# r = 'ab*ab*'
-# w = 'aa'
-
-# Dice que no pertenece!!!!
-# r = '(aa*)|(bb*)'
-# w = 'aaaa' 
-
 # Expresión ya minimizada
 # r = '(aa|bb)*'
 # w = 'aabbaa'
@@ -51,73 +43,42 @@ w = "bababaaaaa"
 # r = '(a(a|b)b)*'
 # w = 'abbaab'
 
-# no
-# r = 'a(a|b)*'
-# w = 'aaab'
-
-# no
-# r = 'a(a|b)*'
-# w = 'abbbba'
-
-# Dice que no lo regresa cuando solo se colocan a o b!!!
-# r = '(a|b)|(abab)'
-# w = 'b'
-
-# Sí, Expresión ya minimizada
+# Expresión ya minimizada
 # r = '0(0|1)0'
 # w = '000'
 
-# Sí, da AFN no simplificado 
+# da AFN no simplificado 
 # r = '0*(0*|1)1'
 # w = '00000011'
 
-# No
-# r = '00*1110(0|1*)'
-# w = '01110111'
-
-# Error
-# r = "a"
-# w = "a"
-
-# Sí, minimizado
+# minimizado
 # r = 'ab'
 # w = 'ab' 
 
-# Sí, minimizado
+# minimizado
 # r = 'aab'
 # w = 'aab'
 
-# Sí, minimizado
+# minimizado
 # r = '(0|1)'
 # w = '0'
 
-# Sí, minimizado 
+# minimizado 
 # r = '0(0|1)0' 
 # w = '000' 
 
-# Sí, minimizado
+# minimizado
 # r = 'a*'
 # w = 'aaaaaaaaaa'
 
-# Sí, minimizado
-r = '0*11*0'
-w = '00001'  
+# minimizado
+# r = '0*11*0'
+# w = '00001'  
 
-# Dice que no pertenece al principio en AFD
-# r = '(b|b)*abb(a|b)*'
-# w = 'abb'  
+# minimizado
+r = '(a|b)*|(a|b)*'
+w = 'abba'  
 
-# Sí, minimizado
-# r = '(a|b)*|(a|b)*'
-# w = 'abba'  
-
-# Dice que a pertenece, pero abab no
-# r = '((a|b)|(abab))|a'
-# w = 'abab'
-
-# La primera simulación de AFD dice que no
-# r = 'ab*ab*'
-# w = 'aa' 
 
 # --------------------------------------------------
 # Construcción de AFN con Thompson
