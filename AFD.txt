@@ -1,0 +1,6 @@
+AFD
+Estados = ['q0', 'q1', 'q2']
+Simbolos = ['0', '1']
+Inicio = A
+Aceptacion = ['q2']
+Transiciones = - (q0, 0, q0) -- (q0, 1, q1) -- (q1, 0, q2) -- (q1, 1, q1) -
