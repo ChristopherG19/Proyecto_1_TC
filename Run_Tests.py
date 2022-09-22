@@ -35,37 +35,89 @@ from time import perf_counter
 # pruebas 
 # _________________________________________
 
-# r = 'ab*ab*#'
+# Dice que no pertenece en el AFD construido por 
+# r = 'ab*ab*'
 # w = 'aa'
 
-# r = '(aa*)|(bb*)#'
-# r = '(a|b)*(a|b)*a?#'
+# Dice que no pertenece!!!!
+# r = '(aa*)|(bb*)'
+# w = 'aaaa' 
 
 # Expresión ya minimizada
-# r = '(aa|bb)*#'
+# r = '(aa|bb)*'
 # w = 'aabbaa'
 
 # Expresión ya minimizada
-# r = '(a(a|b)b)*#'
+# r = '(a(a|b)b)*'
 # w = 'abbaab'
 
-# r = 'a(a|b)*#'
+# no
+# r = 'a(a|b)*'
 # w = 'aaab'
 
-# r = 'a(a|b)*#'
-# r = '(a|b)|(abab)'
+# no
+# r = 'a(a|b)*'
+# w = 'abbbba'
 
-# Expresión ya minimizada
-# r = '0(0|1)0#'
+# Dice que no lo regresa cuando solo se colocan a o b!!!
+# r = '(a|b)|(abab)'
+# w = 'b'
+
+# Sí, Expresión ya minimizada
+# r = '0(0|1)0'
 # w = '000'
 
-# Da no simplificado 
-r = '0*(0*|1)1'
-w = '00000011'
+# Sí, da AFN no simplificado 
+# r = '0*(0*|1)1'
+# w = '00000011'
 
-# 
-# r = '00*1110(0|1*)#'
+# No
+# r = '00*1110(0|1*)'
 # w = '01110111'
+
+# Error
+# r = "a"
+# w = "a"
+
+# Sí, minimizado
+# r = 'ab'
+# w = 'ab' 
+
+# Sí, minimizado
+# r = 'aab'
+# w = 'aab'
+
+# Sí, minimizado
+# r = '(0|1)'
+# w = '0'
+
+# Sí, minimizado 
+# r = '0(0|1)0' 
+# w = '000' 
+
+# Sí, minimizado
+# r = 'a*'
+# w = 'aaaaaaaaaa'
+
+# Sí, minimizado
+r = '0*11*0'
+w = '00001'  
+
+# Dice que no pertenece al principio en AFD
+# r = '(b|b)*abb(a|b)*'
+# w = 'abb'  
+
+# Sí, minimizado
+# r = '(a|b)*|(a|b)*'
+# w = 'abba'  
+
+# Dice que a pertenece, pero abab no
+# r = '((a|b)|(abab))|a'
+# w = 'abab'
+
+# La primera simulación de AFD dice que no
+# r = 'ab*ab*'
+# w = 'aa' 
 
 # --------------------------------------------------
 # Construcción de AFN con Thompson
@@ -162,9 +214,9 @@ print('tiempo de ejecución: %.4e s'%(t5_stop - t5_start))
 print('\n--> Simulación AFD\n')
 t6_start = perf_counter()
 if (dfa.simulation(w)):
-    print('El string %s pertenece al AFD'%w)
+    print('El string %s SÍ pertenece al AFD'%w)
 else:
-    print('El string %s no pertenece al AFD'%w)
+    print('El string %s NO pertenece al AFD'%w)
 t6_stop = perf_counter()
 print('tiempo de ejecución: %.4e s'%(t6_stop - t6_start))
 
@@ -185,9 +237,9 @@ print('tiempo de ejecución: %.4e s'%(t7_stop - t7_start))
 print('\n--> Simulación AFD minimizado\n')
 t8_start = perf_counter()
 if (dfa.simulation(w)):
-    print('El string %s pertenece al AFD'%w)
+    print('El string %s SÍ pertenece al AFD'%w)
 else:
-    print('El string %s no pertenece al AFD'%w)
+    print('El string %s NO pertenece al AFD'%w)
 t8_stop = perf_counter()
 print('tiempo de ejecución: %.4e s'%(t8_stop - t8_start))
 print()

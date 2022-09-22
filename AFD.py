@@ -125,7 +125,7 @@ class AFD():
 
         s = self.afd[0][0]
         i = 0
-        
+
 
         while (i <= (len(w) - 1) and s):
             c = w[i]
