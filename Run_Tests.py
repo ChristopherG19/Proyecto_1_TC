@@ -122,34 +122,28 @@ w = '00001'
 # --------------------------------------------------
 # Construcción de AFN con Thompson
 print('\n--> Construcción AFN con construcción de Thompson')
-t1_start = perf_counter()
 Cons = Construction(r)
-AFN_Thompson = Cons.Thompson_Construction()
-t1_stop = perf_counter()
+AFN_Thompson, Tiempo = Cons.Thompson_Construction()
 Cons.printResults(AFN_Thompson)
-print('Tiempo de ejecución: %.4e s'%(t1_stop - t1_start))
+print('Tiempo de ejecución: %.4e s'%Tiempo)
 # --------------------------------------------------
 
 # --------------------------------------------------
 # Simulación de cadenas en AFN
 print('\n--> Simulación AFN')
-t2_start = perf_counter()
-ResultadoSimulacion = SimulationAFN(r, w)
+ResultadoSimulacion, Tiempo = SimulationAFN(r, w)
 print("\nExpresion regular:", r)
 print("Cadena a evaluar:", w)
 print("Resultado: La cadena %s"%w, ResultadoSimulacion, "es aceptada\n")
-t2_stop = perf_counter()
-print('Tiempo de ejecución: %.4e s'%(t2_stop - t2_start))
+print('Tiempo de ejecución: %.4e s'%Tiempo)
 # --------------------------------------------------
 
 # --------------------------------------------------
 # Construcción de AFD con subconjuntos
 print('\n--> Construcción AFD con subconjuntos')
-t3_start = perf_counter()
 AFD_Subconjuntos = AFN_To_AFD_SC(r)
 printResultsAFD(AFD_Subconjuntos[0], AFD_Subconjuntos[1], AFD_Subconjuntos[2])
-t3_stop = perf_counter()
-print('Tiempo de ejecución: %.4e s'%(t3_stop - t3_start))
+print('Tiempo de ejecución: %.4e s'%AFD_Subconjuntos[-1])
 # --------------------------------------------------
 
 # --------------------------------------------------

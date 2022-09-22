@@ -10,6 +10,7 @@
 from conversions import *
 from stack import *
 from operator import itemgetter
+from time import perf_counter
 
 # Símbolo epsilon utilizado a lo largo de Thompson
 epsilon = '$'
@@ -39,6 +40,8 @@ class Construction:
         #Se obtiene la expresión en postfix
         self.Obj = Conversion(self.expression)
         self.postfixExp = self.Obj.infixToPostfix()
+        t1_start = perf_counter()
+
 
         for element in self.postfixExp:
             # Dependiendo del elemento trabaja una operación diferente
@@ -128,6 +131,7 @@ class Construction:
         AFN = self.stackAFN.pop()
         # Se evaluan los estados con este método para revisar que todos estén bien
         self.CheckStates(AFN)
+        t1_stop = perf_counter()
         # Para imprimir resultados en dado caso se pruebe desde este archivo
         # Descomentar línea siguiente: 
         # self.printResults(AFN)
@@ -137,9 +141,9 @@ class Construction:
             SortedAFN = AFN
         else:
             SortedAFN = sorted(AFN, key=itemgetter(0, 2))
-
+        tiempo = (t1_stop - t1_start)
         # Finalmente se retorna el AFN para ser utilizado en otros archivos o funciones
-        return SortedAFN
+        return SortedAFN, tiempo
 
     # Componente símbolo: Se crean relaciones del tipo NodoA-[simbolo]->NodoB
     def symbol(self, symbolT):

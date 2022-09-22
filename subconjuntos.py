@@ -19,7 +19,7 @@ def listAlphabet():
 def AFN_To_AFD_SC(r):
     # Se crea el AFN y se obtienen datos del mismo
     Constr = Construction(r)
-    AFN = Constr.Thompson_Construction()
+    AFN, Tiempo = Constr.Thompson_Construction()
     States = Constr.states
     Last = list(States)[-1]
     Symbols = Constr.symbols
@@ -137,7 +137,7 @@ def AFN_To_AFD_SC(r):
         if Last in value:
             AcceptState.append(key)
 
-    return (InitState, AcceptState, NewStates2, r)
+    return (InitState, AcceptState, NewStates2, r, Tiempo)
 
 # Método que imprime los resultados
 def printResultsAFD(InitState, AcceptState, NewStates2):

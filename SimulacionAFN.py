@@ -19,7 +19,7 @@ def intersection(lst1, lst2):
 def SimulationAFN(r, w):
     # Se crea el AFN y se obtienen elementos del mismo
     Constr = Construction(r)
-    AFN = Constr.Thompson_Construction()
+    AFN, Tiempo = Constr.Thompson_Construction()
     States = Constr.states
     AcceptState = []
     AcceptState.append(list(States)[-1])
@@ -39,9 +39,9 @@ def SimulationAFN(r, w):
 
     # Si la cadena es aceptada se retornará "sí", de lo contrario "no"
     if (intersection(S, AcceptState) != []):
-        return "si"
+        return "si", Tiempo
     else:
-        return "no"   
+        return "no", Tiempo  
     
 # Método e_closure, extraído de los documentos de clase. 
 # Se obtienen todos los estados que son alcanzados por epsilon
