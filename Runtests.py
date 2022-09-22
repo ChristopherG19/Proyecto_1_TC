@@ -23,13 +23,13 @@ from time import perf_counter
 # r = "0(0|1)0"
 # r = "0*(0*|1)1"
 # r = "0*11*0"
-# r = "(b|b)*abb(a|b)*"
+r = "(b|b)*abb(a|b)*"
 # r = "(a|b)*|(a|b)*"
 # r = "((a|b)|(abab))|a"
 # r = "ab*ab*"
 # r = "(a|b)$"
 # r = "(a|b)*(abba*|(ab)*ba)"
-# w = "abbaaa"
+w = "bababaaaaa"
 
 # _________________________________________
 # pruebas 
@@ -49,8 +49,8 @@ from time import perf_counter
 # r = '(a(a|b)b)*'
 # w = 'abbaab'
 
-r = 'a(a|b)*'
-w = 'aaab'
+# r = 'a(a|b)*'
+# w = 'aaab'
 
 # r = 'a(a|b)*'
 # r = '(a|b)|(abab)'
