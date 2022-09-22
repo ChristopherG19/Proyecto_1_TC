@@ -28,4 +28,7 @@ Por convención se decidio que el símbolo epsilon ε sería reemplazado por $.
 - Aceptación = [0, 1, ..., n]
 - Transiciones = (0, a, 1) - (0, $, 2) - ...
 
+## Ejecución
+El archivo Run_Tests.py funciona como main. En este se puede modificar tanto el valor de la expresión regular (r) y el valor de la cadena (w). Posteriormente al ejecutar el archivo imprime todo lo que se mencionó con anterioridad y también se escriben archivos de texto con los mismos valores.
+
 ![Python](http://ForTheBadge.com/images/badges/made-with-python.svg)
