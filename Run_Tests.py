@@ -64,8 +64,8 @@ w = "bababaaaaa"
 # w = '0'
 
 # minimizado 
-# r = '0(0|1)0' 
-# w = '000' 
+r = '0(0|1)0' 
+w = '000' 
 
 # minimizado
 # r = 'a*'
@@ -76,8 +76,8 @@ w = "bababaaaaa"
 # w = '00001'  
 
 # minimizado
-r = '(a|b)*|(a|b)*'
-w = 'abba'  
+# r = '(a|b)*|(a|b)*'
+# w = 'abba'  
 
 
 # --------------------------------------------------

@@ -252,6 +252,8 @@ class AFD():
                     aceptacion += False
             new_EA.append(bool(aceptacion))
 
+        # Nuevo estado inicial
+
         self.EA = []
         self.EA = new_EA
 
@@ -269,6 +271,8 @@ class AFD():
 
         # Renombramos los estados 
         newStates = ["q%s"%x for x in range(len(G))]
+
+        self.initState = [newStates[0]]
 
         temp_afd = []
         for trans in afd_temp:
