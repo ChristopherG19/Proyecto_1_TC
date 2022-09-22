@@ -224,8 +224,7 @@ class Construction:
                 AFN_B.append(NewEstado)
                 AFN_C = AFN_B
             else:
-                self.states.add(Start)
-                NewEstado = [Start, AFN_A[1], AFN_A[0]]
+                NewEstado = [AFN_A[0], AFN_A[1], AFN_A[2]]
                 AFN_B.append(NewEstado)
                 AFN_C = AFN_B
 
