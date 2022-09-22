@@ -1,0 +1,36 @@
+_________________________________________________
+AFN-Thompson
+Estados = {1, 2, 3, 4, 5, 6, 7, 8}
+Simbolos = ['0', '1']
+Inicio = 0
+Aceptacion = 1
+Transiciones = (1, 0, 2) - (2, $, 3) - (2, $, 5) - (3, 0, 4) - (4, $, 7) - (5, 1, 6) - (6, $, 7) - (7, 0, 8)
+_________________________________________________
+AFD-Subconjuntos
+Estados = {1, 2, 3, 4, 5, 6, 7, 8}
+Simbolos = ['0', '1']
+Inicio = A
+Aceptacion = ['E']
+Transiciones = [['A', '0', 'B'], ['A', '1', None], ['B', '0', 'C'], ['B', '1', 'D'], ['C', '0', 'E'], ['C', '1', None], ['D', '0', 'E'], ['D', '1', None], ['E', '0', None], ['E', '1', None]]
+_________________________________________________
+AFD-Subconjunto-Minimizado
+Estados = ['q0', 'q1', 'q2', 'q3']
+Simbolos = ['0', '1']
+Inicio = ['q0']
+Aceptacion = ['q3']
+Transiciones = - (q0, 0, q2) -- (q1, 0, q3) -- (q2, 0, q1) -- (q2, 1, q1) -
+_________________________________________________
+AFD-Directo
+Estados = ['q0', 'q1', 'q2', 'q3']
+Simbolos = ['0', '1']
+Inicio = q0
+Aceptacion = ['q3']
+Transiciones = - (q0, 0, q1) -- (q1, 0, q2) -- (q1, 1, q2) -- (q2, 0, q3) -
+_________________________________________________
+AFD-min
+Estados = ['q0', 'q1', 'q2', 'q3']
+Simbolos = ['0', '1']
+Inicio = ['q0']
+Aceptacion = ['q3']
+Transiciones = - (q0, 0, q2) -- (q1, 0, q3) -- (q2, 0, q1) -- (q2, 1, q1) -
+_________________________________________________

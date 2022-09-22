@@ -163,6 +163,14 @@ print(dfa)
 print("Estados de aceptación: ", ", ".join(dfa.getFinalStates()))
 print('tiempo de ejecución: %.4e s'%(t5_stop - t5_start))
 # --------------------------------------------------
+lines3 = [
+    'AFD-Directo',
+    'Estados = %s'%dfa.Dstates,
+    'Simbolos = %s'%dfa.Symbols,
+    'Inicio = %s'%dfa.initState,
+    'Aceptacion = %s'%dfa.getFinalStates(),
+    'Transiciones = %s'%dfa
+]
 
 # --------------------------------------------------
 # Simulación de cadenas
@@ -200,8 +208,8 @@ print('tiempo de ejecución: %.4e s'%(t8_stop - t8_start))
 print()
 # --------------------------------------------------
 
-lines2 = [
-    'AFN',
+lines1 = [
+    'AFN-Thompson',
     'Estados = %s'%Cons.states,
     'Simbolos = %s'%Cons.symbols,
     'Inicio = %s'%list(Cons.symbols)[0],
@@ -209,14 +217,17 @@ lines2 = [
     'Transiciones = %s'%Cons.FinalTransitions
 ]
 
-# Escribir a un archivo
-with open('AFN.txt', 'w') as f:
-    for line in lines2:
-        f.write(line)
-        f.write('\n')
-        
-lines = [
-    'AFD',
+lines5 = [
+    'AFD-Subconjuntos',
+    'Estados = %s'%Cons.states,
+    'Simbolos = %s'%Cons.symbols,
+    'Inicio = %s'%AFD_Subconjuntos[0],
+    'Aceptacion = %s'%AFD_Subconjuntos[1],
+    'Transiciones = %s'%AFD_Subconjuntos[2]
+]
+
+lines2 = [
+    'AFD-Subconjunto-Minimizado',
     'Estados = %s'%dfa2.Dstates,
     'Simbolos = %s'%dfa2.Symbols,
     'Inicio = %s'%dfa2.initState,
@@ -224,8 +235,35 @@ lines = [
     'Transiciones = %s'%dfa2
 ]
 
+lines4 = [
+    'AFD-min',
+    'Estados = %s'%dfa.Dstates,
+    'Simbolos = %s'%dfa.Symbols,
+    'Inicio = %s'%dfa.initState,
+    'Aceptacion = %s'%dfa.getFinalStates(),
+    'Transiciones = %s'%dfa
+]
+
 # Escribir a un archivo
-with open('AFD.txt', 'w') as f:
-    for line in lines:
+with open('Results.txt', 'w') as f:
+    f.write('_________________________________________________\n')
+    for line in lines1:
         f.write(line)
         f.write('\n')
+    f.write('_________________________________________________\n')
+    for line in lines5:
+        f.write(line)
+        f.write('\n') 
+    f.write('_________________________________________________\n')
+    for line in lines2:
+        f.write(line)  
+        f.write('\n') 
+    f.write('_________________________________________________\n')
+    for line in lines3:
+        f.write(line)  
+        f.write('\n')  
+    f.write('_________________________________________________\n')
+    for line in lines4:
+        f.write(line)  
+        f.write('\n')         
+    f.write('_________________________________________________\n')
