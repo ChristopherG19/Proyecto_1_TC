@@ -1,4 +1,7 @@
 # Proyecto_1_TC
+
+Proyecto#1: Teoría de la Computación, Universidad del Valle de Guatemala.
+
 Integrantes: 
 -      Christopher García 20541
        Ma. Isabel Solano 20504
